@@ -1,20 +1,18 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-using namespace std;
 
-double get_income(int year) {
+double get_income(const int year) {
 	while (true) {
-		string income;
+		std::string income;
 
-		cout << "Enter income for " << year << ": ";
-		cin >> income;
+		std::cout << "Enter income for " << year << ": ";
+		std::cin >> income;
 
 		try {
 			return stod(income);
-		}
-		catch (const invalid_argument& ia) {
-			cout << "Input must be a number\n";
+		} catch (const std::invalid_argument& ia) {
+			std::cout << "Input must be a number\n";
 		}
 	}
 }
@@ -30,8 +28,8 @@ int main() {
 
 	double average_income = total_income / years;
 
-	cout << "Income (averaged over the past " << years << " years) is: $"
-	<< fixed << setprecision(2) << average_income;
+	std::cout << "Income (averaged over the past " << years << " years) is: $"
+	<< std::fixed << std::setprecision(2) << average_income;
 
 	return 0;
 }
