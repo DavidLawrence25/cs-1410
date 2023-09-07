@@ -32,6 +32,29 @@ int get_integer(const std::string prompt, const std::string conversion_failed_me
 	}
 }
 
+template <typename... ExtraArgs>
+int get_integer(const std::string prompt, bool (*validator)(int, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args) {
+	while (true) {
+		std::string input;
+
+		std::cout << prompt;
+		std::cin >> input;
+
+		int x;
+		try {
+			x = stoi(input);
+		} catch (const std::invalid_argument& ia) {
+			std::cout << conversion_failed_message;
+			continue;
+		}
+		if (validator(x, extra_args...)) {
+			return x;
+		}
+
+		std::cout << validator_failed_message;
+	}
+}
+
 float get_float(const std::string prompt, const std::string conversion_failed_message) {
 	while (true) {
 		std::string input;
