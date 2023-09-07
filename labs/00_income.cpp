@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <string>
 
-// unfortunately, this could not reuse anything inside user_input.hpp
+// modified from get_double in https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
 double get_income(const int year) {
 	while (true) {
 		std::string income;
@@ -24,17 +24,17 @@ double get_income(const int year) {
 }
 
 int main() {
-	const int years = 5;
-	const int start_year = 2016;
+	const int YEARS = 5;
+	const int START_YEAR = 2016;
 
 	double total_income = 0.0;
-	for (int i = 0; i < years; i++) {
-		total_income += get_income(start_year - i);
+	for (int i = 0; i < YEARS; i++) {
+		total_income += get_income(START_YEAR - i);
 	}
 
-	double average_income = total_income / years;
+	double average_income = total_income / YEARS;
 
-	std::cout << "Income (averaged over the past " << years << " years) is: $"
+	std::cout << "Income (averaged over the past " << YEARS << " years) is: $"
 	<< std::fixed << std::setprecision(2) << average_income;
 
 	return 0;
