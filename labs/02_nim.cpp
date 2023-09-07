@@ -1,3 +1,8 @@
+/*
+	For all the code Rose wrote for CS 1410, visit this Git repository:
+	https://github.com/DavidLawrence25/cs-1410
+*/
+
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -5,7 +10,7 @@
 
 enum turn_t {human, robot};
 
-// general-purpose function from user_input.hpp (something i wrote myself)
+// borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
 template <typename... ExtraArgs>
 int get_integer(const std::string prompt, bool (*validator)(int, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args) {
 	while (true) {

@@ -1,9 +1,15 @@
+/*
+	For all the code Rose wrote for CS 1410, visit this Git repository:
+	https://github.com/DavidLawrence25/cs-1410
+*/
+
 #include <iostream>
 #include <string>
 #include <math.h>
 
 enum number_type {deficient, perfect, abundant};
 
+// modified from factors_of in https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/int_utils.hpp
 int sum_of_factors(const int x) {
 	if (x < 1) {
 		throw std::invalid_argument("get_factors only accepts strictly-positive integers\n");
@@ -27,6 +33,22 @@ int sum_of_factors(const int x) {
 	return sum;
 }
 
+// borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
+int get_integer(const std::string prompt, const std::string conversion_failed_message) {
+	while (true) {
+		std::string input;
+
+		std::cout << prompt;
+		std::cin >> input;
+
+		try {
+			return stoi(input);
+		} catch (const std::invalid_argument& ia) {
+			std::cout << conversion_failed_message;
+		}
+	}
+}
+
 number_type determine_number_type(const int x) {
 	int sum = sum_of_factors(x);
 	if (sum < x) {
@@ -38,25 +60,10 @@ number_type determine_number_type(const int x) {
 	return number_type::perfect;
 }
 
-int get_number() {
-	while (true) {
-		std::string input;
-
-		std::cout << "Enter a number (-1 to quit): ";
-		std::cin >> input;
-
-		try {
-			return stoi(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << "Invalid input. Please try again.\n";
-		}
-	}
-}
-
 int main() {
 	std::cout << "Number Types:\n";
 	while (true) {
-		int x = get_number();
+		int x = get_integer("Enter a number (-1 to quit): ", "Invalid input. Please try again.\n");
 		if (x == -1) {
 			return 0;
 		}

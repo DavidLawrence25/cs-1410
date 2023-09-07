@@ -1,7 +1,13 @@
+/*
+	For all the code Rose wrote for CS 1410, visit this Git repository:
+	https://github.com/DavidLawrence25/cs-1410
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <string>
 
+// unfortunately, this could not reuse anything inside user_input.hpp
 double get_income(const int year) {
 	while (true) {
 		std::string income;

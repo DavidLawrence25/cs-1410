@@ -1,10 +1,16 @@
+/*
+	For all the code Rose wrote for CS 1410, visit this Git repository:
+	https://github.com/DavidLawrence25/cs-1410
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <math.h>
 #include <unordered_map>
 
-int text_prompt(const std::string prompt, const std::unordered_map<std::string, int> options) {
+// borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
+int menu_prompt(const std::string prompt, const std::string option_not_found_message, const std::unordered_map<std::string, int> options) {
 	while (true) {
 		std::string option;
 
@@ -15,11 +21,12 @@ int text_prompt(const std::string prompt, const std::unordered_map<std::string, 
 			return options.at(option);
 		}
 
-		std::cout << "Invalid input. Please try again.\n";
+		std::cout << option_not_found_message;
 	}
 }
 
-double text_prompt(const std::string prompt) {
+// borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
+double get_double(const std::string prompt, const std::string conversion_failed_message) {
 	while (true) {
 		std::string input;
 
@@ -29,7 +36,7 @@ double text_prompt(const std::string prompt) {
 		try {
 			return stod(input);
 		} catch (const std::invalid_argument& ia) {
-			std::cout << "Invalid input. Please try again.\n";
+			std::cout << conversion_failed_message;
 		}
 	}
 }
@@ -37,16 +44,17 @@ double text_prompt(const std::string prompt) {
 int menu() {
 	const std::unordered_map<std::string, int> options {{"1", 1}, {"2", 2}, {"3", 3}};
 
-	return text_prompt(
+	return menu_prompt(
 		"1. Calculate Years to Financial Goal\n2. Calculate Amount Based on Years\n3. Quit\n",
+		"Invalid input. Please try again\n",
 		options
 	);
 }
 
 void calculate_years() {
-	double investment = text_prompt("Enter Investment Amount: ");
-	const double interest_rate = 0.01 * text_prompt("Enter Interest Rate: ");
-	const double goal = text_prompt("Enter Financial Goal: ");
+	double investment = get_double("Enter Investment Amount: ", "Invalid input. Please try again\n");
+	const double interest_rate = 0.01 * get_double("Enter Interest Rate: ", "Invalid input. Please try again\n");
+	const double goal = get_double("Enter Financial Goal: ", "Invalid input. Please try again\n");
 
 	const int goal_width = (int)log10(goal) + 4;
 
@@ -66,9 +74,9 @@ void calculate_years() {
 }
 
 void calculate_amount() {
-	double investment = text_prompt("Enter Investment Amount: ");
-	const double interest_rate = 0.01 * text_prompt("Enter Interest Rate: ");
-	const int years = (int)text_prompt("Enter Years to Maturity: ");
+	double investment = get_double("Enter Investment Amount: ", "Invalid input. Please try again\n");
+	const double interest_rate = 0.01 * get_double("Enter Interest Rate: ", "Invalid input. Please try again\n");
+	const int years = (int)get_double("Enter Years to Maturity: ", "Invalid input. Please try again\n");
 
 	investment *= pow(1 + interest_rate, years);
 

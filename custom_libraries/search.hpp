@@ -1,3 +1,8 @@
+/*
+	For all the code Rose wrote for CS 1410, visit this Git repository:
+	https://github.com/DavidLawrence25/cs-1410
+*/
+
 #include <vector>
 
 // returns the index of the value in the sorted vector, if present (returns -1 otherwise)
