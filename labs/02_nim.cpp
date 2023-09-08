@@ -8,7 +8,7 @@
 #include <time.h>
 #include <string>
 
-enum turn_t {human, robot};
+enum TurnType {human, robot};
 
 // borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
 template <typename... ExtraArgs>
@@ -65,24 +65,24 @@ int main() {
 	const int MIN_STARTING_PILE_SIZE = 10; // inclusive
 	const int MAX_STARTING_PILE_SIZE = 100; // exclusive
 	int pile_size = rand() % (MAX_STARTING_PILE_SIZE - MIN_STARTING_PILE_SIZE) + MIN_STARTING_PILE_SIZE;
-	turn_t turn = turn_t::human;
+	TurnType turn = TurnType::human;
 
 	while (pile_size > 0) {
-		if (turn == turn_t::human) {
+		if (turn == TurnType::human) {
 			std::cout << "Stones in The Pile: " << pile_size << '\n';
 			pile_size = take_stones_human(pile_size);
-			turn = turn_t::robot;
-		} else if (turn == turn_t::robot) {
+			turn = TurnType::robot;
+		} else if (turn == TurnType::robot) {
 			pile_size = take_stones_robot(pile_size);
-			turn = turn_t::human;
+			turn = TurnType::human;
 		} else {
 			std::cout << "What the frick did you do?\n";
 		}
 	}
 
-	if (turn == turn_t::robot) { // the robot won
+	if (turn == robot) { // the robot won
 		std::cout << "\nYou lose.\n";
-	} else if (turn == turn_t::human) { // the human won
+	} else if (turn == human) { // the human won
 		std::cout << "You win!\n";
 	} else {
 		std::cout << "What the frick did you do?\n";

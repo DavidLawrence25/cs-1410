@@ -51,8 +51,9 @@ Rose's editor utilizes 4-wide tabs, but the exact width may vary from editor to 
 - **Functions:** `snake_case`
 - **Files:** `snake_case`
 - **Classes:** `PascalCase`
+- **Class Members:** `snake_case` w/trailing underscore
 - **Types:** `PascalCase`
-- **Enums:** `snake_case`
+- **Enums:** `PascalCase`
 
 ###### *note that this only really applies to constants whose exact values could be determined at compile time. variables marked constant to denote that they won't change throughout a function are treated as variables for casing purposes
 

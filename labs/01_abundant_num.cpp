@@ -7,7 +7,7 @@
 #include <string>
 #include <math.h>
 
-enum num_t {deficient, perfect, abundant};
+enum NumberType {deficient, perfect, abundant};
 
 // modified from factors_of in https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/int_utils.hpp
 int sum_of_factors(const int x) {
@@ -49,15 +49,15 @@ int get_integer(const std::string prompt, const std::string conversion_failed_me
 	}
 }
 
-num_t determine_number_type(const int x) {
+NumberType determine_number_type(const int x) {
 	int sum = sum_of_factors(x);
 	if (sum < x) {
-		return num_t::deficient;
+		return NumberType::deficient;
 	}
 	if (sum > x) {
-		return num_t::abundant;
+		return NumberType::abundant;
 	}
-	return num_t::perfect;
+	return NumberType::perfect;
 }
 
 int main() {
@@ -68,12 +68,12 @@ int main() {
 			return 0;
 		}
 
-		num_t x_type = determine_number_type(x);
-		if (x_type == num_t::deficient) {
+		NumberType x_type = determine_number_type(x);
+		if (x_type == deficient) {
 			std::cout << x << " is a deficient number.\n\n";
-		} else if (x_type == num_t::perfect) {
+		} else if (x_type == perfect) {
 			std::cout << x << " is a perfect number.\n\n";
-		} else if (x_type == num_t::abundant) {
+		} else if (x_type == abundant) {
 			std::cout << x << " is an abundant number.\n\n";
 		} else {
 			std::cout << "What the frick did you do?\n\n";
