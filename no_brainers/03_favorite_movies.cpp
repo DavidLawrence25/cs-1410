@@ -16,21 +16,20 @@ std::unordered_map<Rating, std::string> RATING_NAMES {
 	{X, "X"}
 };
 
-// this would be much better suited for a class instead of a struct...
 struct Movie {
 	std::string title;
 	int release_year;
 	Rating rating;
-};
 
-void display(Movie movie) {
-	std::cout << '"' << movie.title << "\" (" << RATING_NAMES.at(movie.rating) << " | " << movie.release_year << ")\n";
-}
+	void display() {
+		std::cout << '"' << title << "\" (" << RATING_NAMES.at(rating) << " | " << release_year << ")\n";
+	}
+};
 
 int main() {
 	std::cout << "Favorite Movies!\n";
 	Movie favorite_movie {"The Princess Bride", 1987, PG};
-	display(favorite_movie);
+	favorite_movie.display();
 
 	return 0;
 }
