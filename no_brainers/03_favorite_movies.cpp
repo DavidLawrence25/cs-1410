@@ -21,10 +21,12 @@ struct Movie {
 	int release_year;
 	Rating rating;
 
-	void display() {
-		std::cout << '"' << title << "\" (" << RATING_NAMES.at(rating) << " | " << release_year << ")\n";
-	}
+	void display();
 };
+
+void Movie::display() {
+	std::cout << '"' << title << "\" (" << RATING_NAMES.at(rating) << " | " << release_year << ")\n";
+}
 
 int main() {
 	std::cout << "Favorite Movies!\n";
