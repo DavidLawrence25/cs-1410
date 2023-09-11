@@ -10,6 +10,44 @@
 
 enum TurnType {human, robot};
 
+template <typename... ExtraArgs>
+int get_integer(const std::string prompt, bool (*validator)(int, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args); // user_input.hpp
+bool can_take_stones(int n, int pile_size);
+int take_stones_human(int pile_size);
+int take_stones_robot(int pile_size);
+
+int main() {
+	srand(time(NULL)); // initialize the pseudo-random number generator
+
+	const int MIN_STARTING_PILE_SIZE = 10; // inclusive
+	const int MAX_STARTING_PILE_SIZE = 100; // exclusive
+	int pile_size = rand() % (MAX_STARTING_PILE_SIZE - MIN_STARTING_PILE_SIZE) + MIN_STARTING_PILE_SIZE;
+	TurnType turn = TurnType::human;
+
+	while (pile_size > 0) {
+		if (turn == TurnType::human) {
+			std::cout << "Stones in The Pile: " << pile_size << '\n';
+			pile_size = take_stones_human(pile_size);
+			turn = TurnType::robot;
+		} else if (turn == TurnType::robot) {
+			pile_size = take_stones_robot(pile_size);
+			turn = TurnType::human;
+		} else {
+			std::cout << "What the frick did you do?\n";
+		}
+	}
+
+	if (turn == robot) { // the robot won
+		std::cout << "\nYou lose.\n";
+	} else if (turn == human) { // the human won
+		std::cout << "You win!\n";
+	} else {
+		std::cout << "What the frick did you do?\n";
+	}
+
+	return 0;
+}
+
 // borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
 template <typename... ExtraArgs>
 int get_integer(const std::string prompt, bool (*validator)(int, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args) {
@@ -57,36 +95,4 @@ int take_stones_robot(int pile_size) {
 
 	std::cout << "Computer takes " << stones_to_take << "\n\n";
 	return pile_size - stones_to_take;
-}
-
-int main() {
-	srand(time(NULL)); // initialize the pseudo-random number generator
-
-	const int MIN_STARTING_PILE_SIZE = 10; // inclusive
-	const int MAX_STARTING_PILE_SIZE = 100; // exclusive
-	int pile_size = rand() % (MAX_STARTING_PILE_SIZE - MIN_STARTING_PILE_SIZE) + MIN_STARTING_PILE_SIZE;
-	TurnType turn = TurnType::human;
-
-	while (pile_size > 0) {
-		if (turn == TurnType::human) {
-			std::cout << "Stones in The Pile: " << pile_size << '\n';
-			pile_size = take_stones_human(pile_size);
-			turn = TurnType::robot;
-		} else if (turn == TurnType::robot) {
-			pile_size = take_stones_robot(pile_size);
-			turn = TurnType::human;
-		} else {
-			std::cout << "What the frick did you do?\n";
-		}
-	}
-
-	if (turn == robot) { // the robot won
-		std::cout << "\nYou lose.\n";
-	} else if (turn == human) { // the human won
-		std::cout << "You win!\n";
-	} else {
-		std::cout << "What the frick did you do?\n";
-	}
-
-	return 0;
 }

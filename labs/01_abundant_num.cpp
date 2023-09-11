@@ -9,6 +9,32 @@
 
 enum NumberType {deficient, perfect, abundant};
 
+int sum_of_factors(const int x); // int_utils.hpp (modified)
+int get_integer(const std::string prompt, const std::string conversion_failed_message); // user_input.hpp
+NumberType determine_number_type(const int x);
+
+int main() {
+	std::cout << "Number Types:\n";
+	while (true) {
+		int x = get_integer("Enter a number (-1 to quit): ", "Invalid input. Please try again.\n");
+		if (x == -1) {
+			return 0;
+		}
+
+		NumberType x_type = determine_number_type(x);
+		if (x_type == deficient) {
+			std::cout << x << " is a deficient number.\n\n";
+		} else if (x_type == perfect) {
+			std::cout << x << " is a perfect number.\n\n";
+		} else if (x_type == abundant) {
+			std::cout << x << " is an abundant number.\n\n";
+		} else {
+			std::cout << "What the frick did you do?\n\n";
+		}
+	}
+	return 0;
+}
+
 // modified from factors_of in https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/int_utils.hpp
 int sum_of_factors(const int x) {
 	if (x < 1) {
@@ -58,26 +84,4 @@ NumberType determine_number_type(const int x) {
 		return NumberType::abundant;
 	}
 	return NumberType::perfect;
-}
-
-int main() {
-	std::cout << "Number Types:\n";
-	while (true) {
-		int x = get_integer("Enter a number (-1 to quit): ", "Invalid input. Please try again.\n");
-		if (x == -1) {
-			return 0;
-		}
-
-		NumberType x_type = determine_number_type(x);
-		if (x_type == deficient) {
-			std::cout << x << " is a deficient number.\n\n";
-		} else if (x_type == perfect) {
-			std::cout << x << " is a perfect number.\n\n";
-		} else if (x_type == abundant) {
-			std::cout << x << " is an abundant number.\n\n";
-		} else {
-			std::cout << "What the frick did you do?\n\n";
-		}
-	}
-	return 0;
 }

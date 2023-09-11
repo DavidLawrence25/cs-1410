@@ -7,21 +7,7 @@
 #include <iomanip>
 #include <string>
 
-// modified from get_double in https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
-double get_income(const int year) {
-	while (true) {
-		std::string income;
-
-		std::cout << "Enter income for " << year << ": ";
-		std::cin >> income;
-
-		try {
-			return stod(income);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << "Input must be a number\n";
-		}
-	}
-}
+double get_income(const int year); // user_input.hpp (modified)
 
 int main() {
 	const int YEARS = 5;
@@ -38,4 +24,20 @@ int main() {
 	<< std::fixed << std::setprecision(2) << average_income;
 
 	return 0;
+}
+
+// modified from get_double in https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
+double get_income(const int year) {
+	while (true) {
+		std::string income;
+
+		std::cout << "Enter income for " << year << ": ";
+		std::cin >> income;
+
+		try {
+			return stod(income);
+		} catch (const std::invalid_argument& ia) {
+			std::cout << "Input must be a number\n";
+		}
+	}
 }

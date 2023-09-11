@@ -9,6 +9,27 @@
 #include <math.h>
 #include <unordered_map>
 
+int menu_prompt(const std::string prompt, const std::string option_not_found_message, const std::unordered_map<std::string, int> options); // user_input.hpp
+double get_double(const std::string prompt, const std::string conversion_failed_message); // user_input.hpp
+int menu();
+void calculate_years();
+void calculate_amount();
+
+int main() {
+	std::cout << "Financial Goal Calculator\n";
+
+	while (true) {
+		int choice = menu();
+		if (choice == 1) {
+			calculate_years();
+		} else if (choice == 2) {
+			calculate_amount();
+		} else if (choice == 3) {
+			return 0;
+		}
+	}
+}
+
 // borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
 int menu_prompt(const std::string prompt, const std::string option_not_found_message, const std::unordered_map<std::string, int> options) {
 	while (true) {
@@ -81,19 +102,4 @@ void calculate_amount() {
 	investment *= pow(1 + interest_rate, years);
 
 	std::cout << "You will have " << investment << " in " << years << " years\n";
-}
-
-int main() {
-	std::cout << "Financial Goal Calculator\n";
-
-	while (true) {
-		int choice = menu();
-		if (choice == 1) {
-			calculate_years();
-		} else if (choice == 2) {
-			calculate_amount();
-		} else if (choice == 3) {
-			return 0;
-		}
-	}
 }
