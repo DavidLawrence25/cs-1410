@@ -78,15 +78,15 @@
 				<li><a href="#friends">Friends</a></li>
 				<li><a href="#exceptions">Exceptions</a></li>
 				<li><a href="#noexcept">noexcept</a></li>
-				<li><a>Run-Time Type Information</a></li>
-				<li><a>Casting</a></li>
-				<li><a>Streams</a></li>
-				<li><a>Preincrement and Predecrement</a></li>
-				<li><a>Use of const</a></li>
-				<li><a>Use of constexpr</a></li>
-				<li><a>Integer Types</a></li>
-				<li><a>64-Bit Portability</a></li>
-				<li><a>Preprocessor Macros</a></li>
+				<li><a href="#run-time-type-information-rtti">Run-Time Type Information (RTTI)</a></li>
+				<li><a href="#casting">Casting</a></li>
+				<li><a href="#streams">Streams</a></li>
+				<li><a href="#preincrement-and-predecrement">Preincrement and Predecrement</a></li>
+				<li><a href="#use-of-const">Use of const</a></li>
+				<li><a href="#use-of-constexpr">Use of constexpr</a></li>
+				<li><a href="#integer-types">Integer Types</a></li>
+				<li><a href="#64-bit-portability">64-Bit Portability</a></li>
+				<li><a href="#preprocessor-macros">Preprocessor Macros</a></li>
 				<li><a>0 and nullptr/NULL</a></li>
 				<li><a>sizeof</a></li>
 				<li><a>Type Deduction (including auto)</a></li>
@@ -1493,3 +1493,302 @@ The `noexcept` operator performs a compile-time check that returns true if an ex
 You may use `noexcept` when it is useful for performance if it accurately reflects the intended semantics of your function, i.e., that if an exception is somehow thrown from within the function body then it represents a fatal error. You can assume that `noexcept` on move constructors has a meaningful performance benefit. If you think there is significant performance benefit from specifying `noexcept` on some other function, please discuss it with your project leads.
 
 Prefer unconditional `noexcept` if exceptions are completely disabled (i.e., most Google C++ environments). Otherwise, use conditional `noexcept` specifiers with simple conditions, in ways that evaluate `false` only in the few cases where the function could potentially throw. The tests might include type traits check on whether the involved operation might throw (e.g., `std::is_nothrow_move_constructible` for move-constructing objects), or on whether allocation can throw (e.g., `absl::default_allocator_is_nothrow` for standard default allocation). Note in many cases the only possible cause for an exception is allocation failure (we believe move constructors should not throw except due to allocation failure), and there are many applications where it’s appropriate to treat memory exhaustion as a fatal error rather than an exceptional condition that your program should attempt to recover from. Even for other potential failures you should prioritize interface simplicity over supporting all possible exception throwing scenarios: instead of writing a complicated `noexcept` clause that depends on whether a hash function can throw, for example, simply document that your component doesn’t support hash functions throwing and make it unconditionally `noexcept`.
+
+### Run-Time Type Information (RTTI)
+
+Avoid using run-time type information (RTTI).
+
+**Definition:**
+
+RTTI allows a programmer to query the C++ class of an object at run-time. This is done by use of `typeid` or `dynamic_cast`.
+
+**Pros:**
+
+The standard alternatives to RTTI (described below) require modification or redesign of the class hierarchy in question. Sometimes such modifications are infeasible or undesirable, particularly in widely-used or mature code.
+
+RTTI can be useful in some unit tests. For example, it is useful in tests of factory classes where the test has to verify that a newly created object has the expected dynamic type. It is also useful in managing the relationship between objects and their mocks.
+
+RTTI is useful when considering multiple abstract objects. Consider
+
+> <code>
+> bool Base::Equal(Base* other) = 0;<br>
+> bool Derived::Equal(Base* other) {<br>
+> &ensp;&ensp;Derived* that = dynamic_cast&lt;Derived*&gt;(other);<br>
+> &ensp;&ensp;if (that == nullptr)<br>
+> &ensp;&ensp;&ensp;&ensp;return false;<br>
+> &ensp;&ensp;...<br>
+> }
+> </code>
+
+<br>
+
+**Cons:**
+
+Querying the type of an object at run-time frequently means a design problem. Needing to know the type of an object at runtime is often an indication that the design of your class hierarchy is flawed.
+
+Undisciplined use of RTTI makes code hard to maintain. It can lead to type-based decision trees or switch statements scattered throughout the code, all of which must be examined when making further changes.
+
+**Decision:**
+
+RTTI has legitimate uses but is prone to abuse, so you must be careful when using it. You may use it freely in unittests, but avoid it when possible in other code. In particular, think twice before using RTTI in new code. If you find yourself needing to write code that behaves differently based on the class of an object, consider one of the following alternatives to querying the type:
+
+- Virtual methods are the preferred way of executing different code paths depending on a specific subclass type. This puts the work within the object itself.
+
+- If the work belongs outside the object and instead in some processing code, consider a double-dispatch solution, such as the Visitor design pattern. This allows a facility outside the object itself to determine the type of class using the built-in type system.
+
+When the logic of a program guarantees that a given instance of a base class is in fact an instance of a particular derived class, then a dynamic_cast may be used freely on the object. Usually one can use a static_cast as an alternative in such situations.
+
+Decision trees based on type are a strong indication that your code is on the wrong track.
+
+> <code>
+> if (typeid(*data) == typeid(D1)) {<br>
+> &ensp;&ensp;...<br>
+> } else if (typeid(*data) == typeid(D2)) {<br>
+> &ensp;&ensp;...<br>
+> } else if (typeid(*data) == typeid(D3)) {<br>
+> ...
+> </code>
+
+<br>
+
+Code such as this usually breaks when additional subclasses are added to the class hierarchy. Moreover, when properties of a subclass change, it is difficult to find and modify all the affected code segments.
+
+Do not hand-implement an RTTI-like workaround. The arguments against RTTI apply just as much to workarounds like class hierarchies with type tags. Moreover, workarounds disguise your true intent.
+
+### Casting
+
+Use C++-style casts like `static_cast<float>(double_value)`, or brace initialization for conversion of arithmetic types like `int64_t y = int64_t{1} << 42`. Do not use cast formats like `(int)x` unless the cast is to `void`. You may use cast formats like `T(x)` only when `T` is a class type.
+
+**Definition:**
+
+C++ introduced a different cast system from C that distinguishes the types of cast operations.
+
+**Pros:**
+
+The problem with C casts is the ambiguity of the operation; sometimes you are doing a conversion (e.g., `(int)3.5`) and sometimes you are doing a cast (e.g., `(int)"hello"`). Brace initialization and C++ casts can often help avoid this ambiguity. Additionally, C++ casts are more visible when searching for them.
+
+**Cons:**
+
+The C++-style cast syntax is verbose and cumbersome.
+
+**Decision:**
+
+In general, do not use C-style casts. Instead, use these C++-style casts when explicit type conversion is necessary.
+
+- Use brace initialization to convert arithmetic types (e.g., `int64_t{x}`). This is the safest approach because code will not compile if conversion can result in information loss. The syntax is also concise.
+
+- Use `absl::implicit_cast` to safely cast up a type hierarchy, e.g., casting a `Foo*` to a `SuperclassOfFoo*` or casting a `Foo*` to a `const Foo*`. C++ usually does this automatically but some situations need an explicit up-cast, such as use of the `?:` operator.
+
+- Use `static_cast` as the equivalent of a C-style cast that does value conversion, when you need to explicitly up-cast a pointer from a class to its superclass, or when you need to explicitly cast a pointer from a superclass to a subclass. In this last case, you must be sure your object is actually an instance of the subclass.
+
+- Use `const_cast` to remove the `const` qualifier (see `const`).
+
+- Use `reinterpret_cast` to do unsafe conversions of pointer types to and from integer and other pointer types, including `void*`. Use this only if you know what you are doing and you understand the aliasing issues. Also, consider dereferencing the pointer (without a cast) and using `absl::bit_cast` to cast the resulting value.
+
+- Use `absl::bit_cast` to interpret the raw bits of a value using a different type of the same size (a type pun), such as interpreting the bits of a double as `int64_t`.
+
+See the RTTI section for guidance on the use of dynamic_cast.
+
+### Streams
+
+Use streams where appropriate, and stick to "simple" usages. Overload `<<` for streaming only for types representing values, and write only the user-visible value, not any implementation details.
+
+**Definition:**
+
+Streams are the standard I/O abstraction in C++, as exemplified by the standard header `<iostream>`. They are widely used in Google code, mostly for debug logging and test diagnostics.
+
+**Pros:**
+
+The `<<` and `>>` stream operators provide an API for formatted I/O that is easily learned, portable, reusable, and extensible. `printf`, by contrast, doesn't even support `std::string`, to say nothing of user-defined types, and is very difficult to use portably. `printf` also obliges you to choose among the numerous slightly different versions of that function, and navigate the dozens of conversion specifiers.
+
+Streams provide first-class support for console I/O via `std::cin`, `std::cout`, `std::cerr`, and `std::clog`. The C APIs do as well, but are hampered by the need to manually buffer the input.
+
+**Cons:**
+
+- Stream formatting can be configured by mutating the state of the stream. Such mutations are persistent, so the behavior of your code can be affected by the entire previous history of the stream, unless you go out of your way to restore it to a known state every time other code might have touched it. User code can not only modify the built-in state, it can add new state variables and behaviors through a registration system.
+
+- It is difficult to precisely control stream output, due to the above issues, the way code and data are mixed in streaming code, and the use of operator overloading (which may select a different overload than you expect).
+
+- The practice of building up output through chains of `<<` operators interferes with internationalization, because it bakes word order into the code, and streams' support for localization is flawed.
+
+- The streams API is subtle and complex, so programmers must develop experience with it in order to use it effectively.
+
+- Resolving the many overloads of `<<` is extremely costly for the compiler. When used pervasively in a large code base, it can consume as much as 20% of the parsing and semantic analysis time.
+
+**Decision:**
+
+Use streams only when they are the best tool for the job. This is typically the case when the I/O is ad-hoc, local, human-readable, and targeted at other developers rather than end-users. Be consistent with the code around you, and with the codebase as a whole; if there's an established tool for your problem, use that tool instead. In particular, logging libraries are usually a better choice than `std::cerr` or `std::clog` for diagnostic output, and the libraries in `absl/strings` or the equivalent are usually a better choice than `std::stringstream`.
+
+Avoid using streams for I/O that faces external users or handles untrusted data. Instead, find and use the appropriate templating libraries to handle issues like internationalization, localization, and security hardening.
+
+If you do use streams, avoid the stateful parts of the streams API (other than error state), such as `imbue()`, `xalloc()`, and `register_callback()`. Use explicit formatting functions (such as `absl::StreamFormat()`) rather than stream manipulators or formatting flags to control formatting details such as number base, precision, or padding.
+
+Overload `<<` as a streaming operator for your type only if your type represents a value, and `<<` writes out a human-readable string representation of that value. Avoid exposing implementation details in the output of `<<`; if you need to print object internals for debugging, use named functions instead (a method named `DebugString()` is the most common convention).
+
+### Preincrement and Predecrement
+
+Use the prefix form (`++i`) of the increment and decrement operators unless you need postfix semantics.
+
+**Definition:**
+
+When a variable is incremented (`++i` or `i++`) or decremented (`--i` or `i--`) and the value of the expression is not used, one must decide whether to preincrement (decrement) or postincrement (decrement).
+
+**Pros:**
+
+A postfix increment/decrement expression evaluates to the value as it was before it was modified. This can result in code that is more compact but harder to read. The prefix form is generally more readable, is never less efficient, and can be more efficient because it doesn't need to make a copy of the value as it was before the operation.
+
+**Cons:**
+
+The tradition developed, in C, of using post-increment, even when the expression value is not used, especially in `for` loops.
+
+**Decision:**
+
+Use prefix increment/decrement, unless the code explicitly needs the result of the postfix increment/decrement expression.
+
+### Use of `const`
+
+In APIs, use `const` whenever it makes sense. `constexpr` is a better choice for some uses of `const`.
+
+**Definition:**
+
+Declared variables and parameters can be preceded by the keyword `const` to indicate the variables are not changed (e.g., `const int foo`). Class functions can have the `const` qualifier to indicate the function does not change the state of the class member variables (e.g., `class Foo { int Bar(char c) const; };`).
+
+**Pros:**
+
+Easier for people to understand how variables are being used. Allows the compiler to do better type checking, and, conceivably, generate better code. Helps people convince themselves of program correctness because they know the functions they call are limited in how they can modify your variables. Helps people know what functions are safe to use without locks in multi-threaded programs.
+
+**Cons:**
+
+`const` is viral: if you pass a `const` variable to a function, that function must have `const` in its prototype (or the variable will need a `const_cast`). This can be a particular problem when calling library functions.
+
+**Decision:**
+
+We strongly recommend using `const` in APIs (i.e., on function parameters, methods, and non-local variables) wherever it is meaningful and accurate. This provides consistent, mostly compiler-verified documentation of what objects an operation can mutate. Having a consistent and reliable way to distinguish reads from writes is critical to writing thread-safe code, and is useful in many other contexts as well. In particular:
+
+- If a function guarantees that it will not modify an argument passed by reference or by pointer, the corresponding function parameter should be a reference-to-const (`const T&`) or pointer-to-const (`const T*`), respectively.
+
+- For a function parameter passed by value, `const` has no effect on the caller, thus is not recommended in function declarations. See TotW #109.
+
+- Declare methods to be `const` unless they alter the logical state of the object (or enable the user to modify that state, e.g., by returning a non-`const` reference, but that's rare), or they can't safely be invoked concurrently.
+
+Using `const` on local variables is neither encouraged nor discouraged.
+
+All of a class's `const` operations should be safe to invoke concurrently with each other. If that's not feasible, the class must be clearly documented as "thread-unsafe".
+
+#### Where to put the `const`
+
+Some people favor the form `int const *foo` to `const int* foo`. They argue that this is more readable because it's more consistent: it keeps the rule that `const` always follows the object it's describing. However, this consistency argument doesn't apply in codebases with few deeply-nested pointer expressions since most `const` expressions have only one `const`, and it applies to the underlying value. In such cases, there's no consistency to maintain. Putting the `const` first is arguably more readable, since it follows English in putting the "adjective" (`const`) before the "noun" (`int`).
+
+That said, while we encourage putting `const` first, we do not require it. But be consistent with the code around you!
+
+### Use of `constexpr`
+
+Use `constexpr` to define true constants or to ensure constant initialization.
+
+**Definition:**
+
+Some variables can be declared `constexpr` to indicate the variables are true constants, i.e., fixed at compilation/link time. Some functions and constructors can be declared `constexpr` which enables them to be used in defining a `constexpr` variable.
+
+**Pros:**
+
+Use of `constexpr` enables definition of constants with floating-point expressions rather than just literals; definition of constants of user-defined types; and definition of constants with function calls.
+
+**Cons:**
+
+Prematurely marking something as `constexpr` may cause migration problems if later on it has to be downgraded. Current restrictions on what is allowed in `constexpr` functions and constructors may invite obscure workarounds in these definitions.
+
+**Decision:**
+
+`constexpr` definitions enable a more robust specification of the constant parts of an interface. Use `constexpr` to specify true constants and the functions that support their definitions. Avoid complexifying function definitions to enable their use with `constexpr`. Do not use `constexpr` to force inlining.
+
+### Integer Types
+
+Of the built-in C++ integer types, the only one used is `int`. If a program needs an integer type of a different size, use an exact-width integer type from `<cstdint>`, such as `int16_t`. If you have a value that could ever be greater than or equal to 2^31, use a 64-bit type such as `int64_t`. Keep in mind that even if your value won't ever be too large for an `int`, it may be used in intermediate calculations which may require a larger type. When in doubt, choose a larger type.
+
+**Definition:**
+
+C++ does not specify exact sizes for the integer types like `int`. Common sizes on contemporary architectures are 16 bits for `short`, 32 bits for `int`, 32 or 64 bits for `long`, and 64 bits for `long long`, but different platforms make different choices, in particular for `long`.
+
+**Pros:**
+
+Uniformity of declaration.
+
+**Cons:**
+
+The sizes of integral types in C++ can vary based on compiler and architecture.
+
+**Decision:**
+
+The standard library header `<cstdint>` defines types like `int16_t`, `uint32_t`, `int64_t`, etc. You should always use those in preference to `short`, `unsigned long long` and the like, when you need a guarantee on the size of an integer. Of the built-in integer types, only `int` should be used. When appropriate, you are welcome to use standard type aliases like `size_t` and `ptrdiff_t`.
+
+We use `int` very often, for integers we know are not going to be too big, e.g., loop counters. Use plain old `int` for such things. You should assume that an `int` is at least 32 bits, but don't assume that it has more than 32 bits. If you need a 64-bit integer type, use `int64_t` or `uint64_t`.
+
+For integers we know can be "big", use `int64_t`.
+
+You should not use the unsigned integer types such as `uint32_t`, unless there is a valid reason such as representing a bit pattern rather than a number, or you need defined overflow modulo 2^N. In particular, do not use unsigned types to say a number will never be negative. Instead, use assertions for this.
+
+If your code is a container that returns a size, be sure to use a type that will accommodate any possible usage of your container. When in doubt, use a larger type rather than a smaller type.
+
+Use care when converting integer types. Integer conversions and promotions can cause undefined behavior, leading to security bugs and other problems.
+
+#### On Unsigned Integers
+
+Unsigned integers are good for representing bitfields and modular arithmetic. Because of historical accident, the C++ standard also uses unsigned integers to represent the size of containers - many members of the standards body believe this to be a mistake, but it is effectively impossible to fix at this point. The fact that unsigned arithmetic doesn't model the behavior of a simple integer, but is instead defined by the standard to model modular arithmetic (wrapping around on overflow/underflow), means that a significant class of bugs cannot be diagnosed by the compiler. In other cases, the defined behavior impedes optimization.
+
+That said, mixing signedness of integer types is responsible for an equally large class of problems. The best advice we can provide: try to use iterators and containers rather than pointers and sizes, try not to mix signedness, and try to avoid unsigned types (except for representing bitfields or modular arithmetic). Do not use an unsigned type merely to assert that a variable is non-negative.
+
+### 64-Bit Portability
+
+Code should be 64-bit and 32-bit friendly. Bear in mind problems of printing, comparisons, and structure alignment.
+
+- Correct portable `printf()` conversion specifiers for some integral typedefs rely on macro expansions that we find unpleasant to use and impractical to require (the `PRI` macros from `<cinttypes>`). Unless there is no reasonable alternative for your particular case, try to avoid or even upgrade APIs that rely on the `printf` family. Instead use a library supporting typesafe numeric formatting, such as `StrCat` or `Substitute` for fast simple conversions, or `std::ostream`.
+
+- Unfortunately, the `PRI` macros are the only portable way to specify a conversion for the standard bitwidth typedefs (e.g., `int64_t`, `uint64_t`, `int32_t`, `uint32_t`, etc). Where possible, avoid passing arguments of types specified by bitwidth typedefs to `printf`-based APIs. Note that it is acceptable to use typedefs for which `printf` has dedicated length modifiers, such as `size_t (z)`, `ptrdiff_t (t)`, and `maxint_t (j)`.
+
+- Remember that `sizeof(void *) != sizeof(int)`. Use `intptr_t` if you want a pointer-sized integer.
+
+- You may need to be careful with structure alignments, particularly for structures being stored on disk. Any class/structure with a `int64_t`/`uint64_t` member will by default end up being 8-byte aligned on a 64-bit system. If you have such structures being shared on disk between 32-bit and 64-bit code, you will need to ensure that they are packed the same on both architectures. Most compilers offer a way to alter structure alignment. For gcc, you can use `__attribute__((packed))`. MSVC offers `#pragma pack()` and `__declspec(align())`.
+
+- Use braced-initialization as needed to create 64-bit constants. For example:
+
+	> <code>
+	> int64_t my_value{0x123456789};<br>
+	> uint64_t my_mask{uint64_t{3} &lt;&lt; 48};
+	> </code>
+
+### Preprocessor Macros
+
+Avoid defining macros, especially in headers; prefer inline functions, enums, and `const` variables. Name macros with a project-specific prefix. Do not use macros to define pieces of a C++ API.
+
+Macros mean that the code you see is not the same as the code the compiler sees. This can introduce unexpected behavior, especially since macros have global scope.
+
+The problems introduced by macros are especially severe when they are used to define pieces of a C++ API, and still more so for public APIs. Every error message from the compiler when developers incorrectly use that interface now must explain how the macros formed the interface. Refactoring and analysis tools have a dramatically harder time updating the interface. As a consequence, we specifically disallow using macros in this way. For example, avoid patterns like:
+
+> <code>
+> class WOMBAT_TYPE(Foo) {<br>
+> &ensp;&ensp;// ...<br>
+> <br>
+> &ensp;public:<br>
+> &ensp;&ensp;EXPAND_PUBLIC_WOMBAT_API(Foo)<br>
+> <br>
+> &ensp;&ensp;EXPAND_WOMBAT_COMPARISONS(Foo, ==, <)<br>
+> };
+> </code>
+
+Luckily, macros are not nearly as necessary in C++ as they are in C. Instead of using a macro to inline performance-critical code, use an inline function. Instead of using a macro to store a constant, use a `const` variable. Instead of using a macro to "abbreviate" a long variable name, use a reference. Instead of using a macro to conditionally compile code ... well, don't do that at all (except, of course, for the `#define` guards to prevent double inclusion of header files). It makes testing much more difficult.
+
+Macros can do things these other techniques cannot, and you do see them in the codebase, especially in the lower-level libraries. And some of their special features (like stringifying, concatenation, and so forth) are not available through the language proper. But before using a macro, consider carefully whether there's a non-macro way to achieve the same result. If you need to use a macro to define an interface, contact your project leads to request a waiver of this rule.
+
+The following usage pattern will avoid many problems with macros; if you use macros, follow it whenever possible:
+
+- Don't define macros in a `.h` file.
+
+- `#define` macros right before you use them, and `#undef` them right after.
+
+- Do not just `#undef` an existing macro before replacing it with your own; instead, pick a name that's likely to be unique.
+
+- Try not to use macros that expand to unbalanced C++ constructs, or at least document that behavior well.
+
+- Prefer not using `##` to generate function/class/variable names.
+
+Exporting macros from headers (i.e., defining them in a header without `#undef`ing them before the end of the header) is extremely strongly discouraged. If you do export a macro from a header, it must have a globally unique name. To achieve this, it must be named with a prefix consisting of your project's namespace name (but upper case).
