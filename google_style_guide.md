@@ -4,32 +4,32 @@
 
 <table>
 	<tr>
-		<td><a>C++ Version</a></td>
+		<td><a href="#c++-version">C++ Version</a></td>
 		<td></td>
 	</tr>
 	<tr>
-		<td><a>Header Files</a></td>
+		<td><a href="#header-files">Header Files</a></td>
 		<td>
 			<ul>
-				<li><a>Self-Contained Headers</a></li>
-				<li><a>The #define Guard</a></li>
-				<li><a>Include What You Use</a></li>
-				<li><a>Forward Declarations</a></li>
-				<li><a>Inline Functions</a></li>
-				<li><a>Names and Order of Includes</a></li>
+				<li><a href="#self-contained-headers">Self-Contained Headers</a></li>
+				<li><a href="#the-define-guard">The #define Guard</a></li>
+				<li><a href="#include-what-you-use">Include What You Use</a></li>
+				<li><a href="#forward-declarations">Forward Declarations</a></li>
+				<li><a href="#inline-functions">Inline Functions</a></li>
+				<li><a href="#names-and-order-of-includes">Names and Order of Includes</a></li>
 			</ul>
 		</td>
 	</tr>
 	<tr>
-		<td><a>Scoping</a></td>
+		<td><a href="#scoping">Scoping</a></td>
 		<td>
 			<ul>
-				<li><a>Namespaces</a></li>
-				<li><a>Internal Linkage</a></li>
-				<li><a>Nonmember, Static Member, and Global Functions</a></li>
-				<li><a>Local Variables</a></li>
-				<li><a>Static and Global Variables</a></li>
-				<li><a>thread_local Variables</a></li>
+				<li><a href="#namespaces">Namespaces</a></li>
+				<li><a href="#internal-linkage">Internal Linkage</a></li>
+				<li><a href="#nonmember-static-member-and-global-functions">Nonmember, Static Member, and Global Functions</a></li>
+				<li><a href="#local-variables">Local Variables</a></li>
+				<li><a href="#static-and-global-variables">Static and Global Variables</a></li>
+				<li><a href="#thread_local-variables">thread_local Variables</a></li>
 			</ul>
 		</td>
 	</tr>
