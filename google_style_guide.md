@@ -155,7 +155,7 @@
 				<li><a href="#boolean-expressions">Boolean Expressions</a></li>
 				<li><a href="#return-values">Return Values</a></li>
 				<li><a href="#variable-and-array-initialization">Variable and Array Initialization</a></li>
-				<li><a>Preprocessor Directives</a></li>
+				<li><a href="#preprocessor-directives">Preprocessor Directives</a></li>
 				<li><a>Class Format</a></li>
 				<li><a>Constructor Initializer Lists</a></li>
 				<li><a>Namespace Formatting</a></li>
@@ -3525,4 +3525,35 @@ Also, the brace form prevents narrowing of integral types. This can prevent some
 > <code>
 > int pi(3.14);&ensp;&ensp;// OK -- pi == 3.<br>
 > int pi{3.14};&ensp;&ensp;// Compile error: narrowing conversion.
+> </code>
+
+### Preprocessor Directives
+
+The hash mark that starts a preprocessor directive should always be at the beginning of the line.
+
+Even when preprocessor directives are within the body of indented code, the directives should start at the beginning of the line.
+
+> <code>
+> // Good - directives at beginning of line<br>
+> &ensp;&ensp;if (lopsided_score) {<br>
+> #if DISASTER_PENDING&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Correct -- Starts at beginning of line<br>
+> &ensp;&ensp;&ensp;&ensp;DropEverything();<br>
+> # if NOTIFY&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// OK but not required -- Spaces after #<br>
+> &ensp;&ensp;&ensp;&ensp;NotifyClient();<br>
+> # endif<br>
+> #endif<br>
+> &ensp;&ensp;&ensp;&ensp;BackToNormal();<br>
+> &ensp;&ensp;}
+> </code>
+
+<br>
+
+> <code>
+> // Bad - indented directives<br>
+> &ensp;&ensp;if (lopsided_score) {<br>
+> &ensp;&ensp;&ensp;&ensp;#if DISASTER_PENDING&ensp;&ensp;// Wrong!&ensp;&ensp;The "#if" should be at beginning of line<br>
+> &ensp;&ensp;&ensp;&ensp;DropEverything();<br>
+> &ensp;&ensp;&ensp;&ensp;#endif&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Wrong!  Do not indent "#endif"<br>
+> &ensp;&ensp;&ensp;&ensp;BackToNormal();<br>
+> &ensp;&ensp;}
 > </code>
