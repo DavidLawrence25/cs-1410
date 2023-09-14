@@ -151,7 +151,7 @@
 				<li><a href="#function-calls">Function Calls</a></li>
 				<li><a href="#braced-initializer-list-format">Braced Initializer List Format</a></li>
 				<li><a href="#looping-and-branching-statements">Looping and Branching Statements</a></li>
-				<li><a>Pointer and Reference Expressions</a></li>
+				<li><a href="#pointer-and-reference-expressions">Pointer and Reference Expressions</a></li>
 				<li><a>Boolean Expressions</a></li>
 				<li><a>Return Values</a></li>
 				<li><a>Variable and Array Initialization</a></li>
@@ -3402,3 +3402,61 @@ Empty loop bodies should use either an empty pair of braces or continue with no 
 > <code>
 > while (condition);&ensp;&ensp;// Bad - looks like part of `do-while` loop.
 > </code>
+
+### Pointer and Reference Expressions
+
+No spaces around period or arrow. Pointer operators do not have trailing spaces.
+
+The following are examples of correctly-formatted pointer and reference expressions.
+
+> <code>
+> x = *p;<br>
+> p = &x;<br>
+> x = r.y;<br>
+> x = r->y;
+> </code>
+
+<br>
+
+Note that:
+
+- There are no spaces around the period or arrow when accessing a member.
+
+- Pointer operators have no space after the `*` or `&`
+
+When referring to a pointer or reference (variable declarations or definitions, arguments, return types, template parameters, etc), you may place the space after the asterisk/ampersand. In the trailing-space style, the space is elided in some cases (template parameters, etc).
+
+> <code>
+> // These are fine, space preceding.<br>
+> char *c;<br>
+> const std::string &str;<br>
+> int *GetPointer();<br>
+> std::vector&lt;char *&gt;;<br>
+> <br>
+> // These are fine, space following (or elided).
+> char* c; <br>
+> const std::string& str;<br>
+> int* GetPointer();<br>
+> std::vector&lt;char*&gt;;&ensp;&ensp;// Note no space between '*' and '>'
+> </code>
+
+<br>
+
+You should do this consistently within a single file. When modifying an existing file, use the style in that file.
+
+It is allowed (if unusual) to declare multiple variables in the same declaration, but it is disallowed if any of those have pointer or reference decorations. Such declarations are easily misread.
+
+> <code>
+> // Fine if helpful for readability.<br>
+> int x, y;
+> </code>
+
+<br>
+
+> <code>
+> int x, *y;&ensp;&ensp;// Disallowed - no & or * in multiple declaration<br>
+> int* x, *y;&ensp;&ensp;// Disallowed - no & or * in multiple declaration; inconsistent spacing<br>
+> char * c;&ensp;&ensp;// Bad - spaces on both sides of *<br>
+> const std::string & str;&ensp;&ensp;// Bad - spaces on both sides of &
+> </code>
+
