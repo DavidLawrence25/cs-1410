@@ -156,20 +156,20 @@
 				<li><a href="#return-values">Return Values</a></li>
 				<li><a href="#variable-and-array-initialization">Variable and Array Initialization</a></li>
 				<li><a href="#preprocessor-directives">Preprocessor Directives</a></li>
-				<li><a>Class Format</a></li>
-				<li><a>Constructor Initializer Lists</a></li>
-				<li><a>Namespace Formatting</a></li>
-				<li><a>Horizontal Whitespace</a></li>
-				<li><a>Vertical Whitespace</a></li>
+				<li><a href="#class-format">Class Format</a></li>
+				<li><a href="#constructor-initializer-lists">Constructor Initializer Lists</a></li>
+				<li><a href="#namespace-formatting">Namespace Formatting</a></li>
+				<li><a href="#horizontal-whitespace">Horizontal Whitespace</a></li>
+				<li><a href="#vertical-whitespace">Vertical Whitespace</a></li>
 			</ul>
 		</td>
 	</tr>
 	<tr>
-		<td><a>Exceptions to the Rules</a></td>
+		<td><a href="#exceptions-to-the-rules">Exceptions to the Rules</a></td>
 		<td>
 			<ul>
-				<li><a>Existing Non-Conformant Code</a></li>
-				<li><a>Windows Code</a></li>
+				<li><a href="#existing-non-conformant-code">Existing Non-Conformant Code</a></li>
+				<li><a href="#windows-code">Windows Code</a></li>
 			</ul>
 		</td>
 	</tr>
@@ -3557,3 +3557,255 @@ Even when preprocessor directives are within the body of indented code, the dire
 > &ensp;&ensp;&ensp;&ensp;BackToNormal();<br>
 > &ensp;&ensp;}
 > </code>
+
+### Class Format
+
+Sections in `public`, `protected` and `private` order, each indented one space.
+
+> <code>
+> class MyClass : public OtherClass {<br>
+> &ensp;public:&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Note the 1 space indent!<br>
+> &ensp;&ensp;MyClass();&ensp;&ensp;// Regular 2 space indent.<br>
+> &ensp;&ensp;explicit MyClass(int var);<br>
+> &ensp;&ensp;~MyClass() {}<br>
+> <br>
+> &ensp;&ensp;void SomeFunction();<br>
+> &ensp;&ensp;void SomeFunctionThatDoesNothing() {<br>
+> &ensp;&ensp;}<br>
+> <br>
+> &ensp;&ensp;void set_some_var(int var) { some_var_ = var; }<br>
+> &ensp;&ensp;int some_var() const { return some_var_; }<br>
+> <br>
+> &ensp;private:<br>
+> &ensp;&ensp;bool SomeInternalFunction();<br>
+> <br>
+> &ensp;&ensp;int some_var_;<br>
+> &ensp;&ensp;int some_other_var_;<br>
+> };
+> </code>
+
+<br>
+
+Things to note:
+
+- Any base class name should be on the same line as the subclass name, subject to the 80-column limit.
+
+- The `public:`, `protected:`, and `private:` keywords should be indented one space.
+
+- Except for the first instance, these keywords should be preceded by a blank line. This rule is optional in small classes.
+
+- Do not leave a blank line after these keywords.
+
+- The `public` section should be first, followed by the `protected` and finally the `private` section.
+
+- See Declaration Order for rules on ordering declarations within each of these sections.
+
+### Constructor Initializer Lists
+
+Constructor initializer lists can be all on one line or with subsequent lines indented four spaces.
+
+The acceptable formats for initializer lists are:
+
+> <code>
+> // When everything fits on one line:<br>
+> MyClass::MyClass(int var) : some_var_(var) {<br>
+> &ensp;&ensp;DoSomething();<br>
+> }<br>
+> <br>
+> // If the signature and initializer list are not all on one line,<br>
+> // you must wrap before the colon and indent 4 spaces:<br>
+> MyClass::MyClass(int var)<br>
+> &ensp;&ensp;&ensp;&ensp;: some_var_(var), some_other_var_(var + 1) {<br>
+> &ensp;&ensp;DoSomething();<br>
+> }<br>
+> <br>
+> // When the list spans multiple lines, put each member on its own line<br>
+> // and align them:<br>
+> MyClass::MyClass(int var)<br>
+> &ensp;&ensp;&ensp;&ensp;: some_var_(var),&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// 4 space indent<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;some_other_var_(var + 1) {&ensp;&ensp;// lined up<br>
+> &ensp;&ensp;DoSomething();<br>
+> }<br>
+> <br>
+> // As with any other code block, the close curly can be on the same<br>
+> // line as the open curly, if it fits.<br>
+> MyClass::MyClass(int var)<br>
+> &ensp;&ensp;&ensp;&ensp;: some_var_(var) {}
+> </code>
+
+### Namespace Formatting
+
+The contents of namespaces are not indented.
+
+Namespaces do not add an extra level of indentation. For example, use:
+
+> <code>
+> namespace {<br>
+> <br>
+> void foo() {&ensp;&ensp;// Correct.&ensp;&ensp;No extra indentation within namespace.<br>
+> &ensp;&ensp;...<br>
+> }<br>
+> <br>
+> }  // namespace
+> </code>
+
+<br>
+
+Do not indent within a namespace:
+
+> <code>
+> namespace {<br>
+> <br>
+> &ensp;&ensp;// Wrong!&ensp;&ensp;Indented when it should not be.<br>
+> &ensp;&ensp;void foo() {<br>
+> &ensp;&ensp;&ensp;&ensp;...<br>
+> &ensp;&ensp;}<br>
+> <br>
+> }&ensp;&ensp;// namespace<br>
+> </code>
+
+### Horizontal Whitespace
+
+Use of horizontal whitespace depends on location. Never put trailing whitespace at the end of a line.
+
+#### General
+
+> <code>
+> int i = 0;&ensp;&ensp;// Two spaces before end-of-line comments.<br>
+> <br>
+> void f(bool b) {&ensp;&ensp;// Open braces should always have a space before them.<br>
+> &ensp;&ensp;...<br>
+> int i = 0;&ensp;&ensp;// Semicolons usually have no space before them.<br>
+> // Spaces inside braces for braced-init-list are optional.&ensp;&ensp;If you use them,<br>
+> // put them on both sides!<br>
+> int x[] = { 0 };<br>
+> int x[] = {0};<br>
+> <br>
+> // Spaces around the colon in inheritance and initializer lists.<br>
+> class Foo : public Bar {<br>
+> &ensp;public:<br>
+> &ensp;&ensp;// For inline function implementations, put spaces between the braces<br>
+> &ensp;&ensp;// and the implementation itself.<br>
+> &ensp;&ensp;Foo(int b) : Bar(), baz_(b) {}&ensp;&ensp;// No spaces inside empty braces.<br>
+> &ensp;&ensp;void Reset() { baz_ = 0; }&ensp;&ensp;// Spaces separating braces from implementation.<br>
+> &ensp;&ensp;...
+> </code>
+
+<br>
+
+Adding trailing whitespace can cause extra work for others editing the same file, when they merge, as can removing existing trailing whitespace. So: Don't introduce trailing whitespace. Remove it if you're already changing that line, or do it in a separate clean-up operation (preferably when no-one else is working on the file).
+
+#### Loops and Conditionals
+
+> <code>
+> if (b) {&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Space after the keyword in conditions and loops.<br>
+> } else {&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Spaces around else.<br>
+> }<br>
+> while (test) {}&ensp;&ensp;&ensp;// There is usually no space inside parentheses.<br>
+> switch (i) {<br>
+> for (int i = 0; i < 5; ++i) {<br>
+> // Loops and conditions may have spaces inside parentheses, but this<br>
+> // is rare.&ensp;&ensp;Be consistent.<br>
+> switch ( i ) {<br>
+> if ( test ) {<br>
+> for ( int i = 0; i < 5; ++i ) {<br>
+> // For loops always have a space after the semicolon.&ensp;&ensp;They may have a space<br>
+> // before the semicolon, but this is rare.<br>
+> for ( ; i < 5 ; ++i) {<br>
+> &ensp;&ensp;...<br>
+> <br>
+> // Range-based for loops always have a space before and after the colon.<br>
+> for (auto x : counts) {<br>
+> &ensp;&ensp;...<br>
+> }<br>
+> switch (i) {<br>
+> &ensp;&ensp;case 1:&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// No space before colon in a switch case.<br>
+> &ensp;&ensp;&ensp;&ensp;...<br>
+> &ensp;&ensp;case 2: break;&ensp;&ensp;// Use a space after a colon if there's code after it.
+> </code>
+
+#### Operators
+
+> <code>
+> // Assignment operators always have spaces around them.<br>
+> x = 0;<br>
+> <br>
+> // Other binary operators usually have spaces around them, but it's<br>
+> // OK to remove spaces around factors.&ensp;&ensp;Parentheses should have no<br>
+> // internal padding.<br>
+> v = w * x + y / z;<br>
+> v = w*x + y/z;<br>
+> v = w * (x + z);<br>
+> <br>
+> // No spaces separating unary operators and their arguments.<br>
+> x = -5;<br>
+> ++x;<br>
+> if (x && !y)<br>
+> &ensp;&ensp;...
+> </code>
+
+#### Templates and Casts
+
+> <code>
+> // No spaces inside the angle brackets (< and >), before<br>
+> // <, or between >( in a cast<br>
+> std::vector&lt;std::string&gt; x;<br>
+> y = static_cast&lt;char*&gt;(x);<br>
+> <br>
+> // Spaces between type and pointer are OK, but be consistent.<br>
+> std::vector&lt;char *&gt; x;
+> </code>
+
+### Vertical Whitespace
+
+Minimize use of vertical whitespace.
+
+This is more a principle than a rule: don't use blank lines when you don't have to. In particular, don't put more than one or two blank lines between functions, resist starting functions with a blank line, don't end functions with a blank line, and be sparing with your use of blank lines. A blank line within a block of code serves like a paragraph break in prose: visually separating two thoughts.
+
+The basic principle is: The more code that fits on one screen, the easier it is to follow and understand the control flow of the program. Use whitespace purposefully to provide separation in that flow.
+
+Some rules of thumb to help when blank lines may be useful:
+
+- Blank lines at the beginning or end of a function do not help readability.
+
+- Blank lines inside a chain of if-else blocks may well help readability.
+
+- A blank line before a comment line usually helps readability — the introduction of a new comment suggests the start of a new thought, and the blank line makes it clear that the comment goes with the following thing instead of the preceding.
+
+- Blank lines immediately inside a declaration of a namespace or block of namespaces may help readability by visually separating the load-bearing content from the (largely non-semantic) organizational wrapper. Especially when the first declaration inside the namespace(s) is preceded by a comment, this becomes a special case of the previous rule, helping the comment to "attach" to the subsequent declaration.
+
+## Exceptions to the Rules
+
+The coding conventions described above are mandatory. However, like all good rules, these sometimes have exceptions, which we discuss here.
+
+### Existing Non-Conformant Code
+
+You may diverge from the rules when dealing with code that does not conform to this style guide.
+
+If you find yourself modifying code that was written to specifications other than those presented by this guide, you may have to diverge from these rules in order to stay consistent with the local conventions in that code. If you are in doubt about how to do this, ask the original author or the person currently responsible for the code. Remember that consistency includes local consistency, too.
+
+### Windows Code
+
+Windows programmers have developed their own set of coding conventions, mainly derived from the conventions in Windows headers and other Microsoft code. We want to make it easy for anyone to understand your code, so we have a single set of guidelines for everyone writing C++ on any platform.
+
+It is worth reiterating a few of the guidelines that you might forget if you are used to the prevalent Windows style:
+
+- Do not use Hungarian notation (for example, naming an integer `iNum`). Use the Google naming conventions, including the `.cc` extension for source files.
+
+- Windows defines many of its own synonyms for primitive types, such as `DWORD`, `HANDLE`, etc. It is perfectly acceptable, and encouraged, that you use these types when calling Windows API functions. Even so, keep as close as you can to the underlying C++ types. For example, use const `TCHAR *` instead of `LPCTSTR`.
+
+- When compiling with Microsoft Visual C++, set the compiler to warning level 3 or higher, and treat all warnings as errors.
+
+- Do not use `#pragma` once; instead use the standard Google include guards. The path in the include guards should be relative to the top of your project tree.
+
+- In fact, do not use any nonstandard extensions, like `#pragma` and `__declspec`, unless you absolutely must. Using `__declspec(dllimport)` and `__declspec(dllexport)` is allowed; however, you must use them through macros such as `DLLIMPORT` and `DLLEXPORT`, so that someone can easily disable the extensions if they share the code.
+
+However, there are just a few rules that we occasionally need to break on Windows:
+
+- Normally we strongly discourage the use of multiple implementation inheritance; however, it is required when using COM and some ATL/WTL classes. You may use multiple implementation inheritance to implement COM or ATL/WTL classes and interfaces.
+
+- Although you should not use exceptions in your own code, they are used extensively in the ATL and some STLs, including the one that comes with Visual C++. When using the ATL, you should define `_ATL_NO_EXCEPTIONS` to disable exceptions. You should investigate whether you can also disable exceptions in your STL, but if not, it is OK to turn on exceptions in the compiler. (Note that this is only to get the STL to compile. You should still not write exception handling code yourself.)
+
+- The usual way of working with precompiled headers is to include a header file at the top of each source file, typically with a name like `StdAfx.h` or `precompile.h`. To make your code easier to share with other projects, avoid including this file explicitly (except in `precompile.cc`), and use the `/FI` compiler option to include the file automatically.
+
+- Resource headers, which are usually named `resource.h` and contain only macros, do not need to conform to these style guidelines.
