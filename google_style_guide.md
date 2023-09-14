@@ -1792,3 +1792,223 @@ The following usage pattern will avoid many problems with macros; if you use mac
 - Prefer not using `##` to generate function/class/variable names.
 
 Exporting macros from headers (i.e., defining them in a header without `#undef`ing them before the end of the header) is extremely strongly discouraged. If you do export a macro from a header, it must have a globally unique name. To achieve this, it must be named with a prefix consisting of your project's namespace name (but upper case).
+
+### `0` and `nullptr`/`NULL`
+
+Use `nullptr` for pointers, and `'\0'` for chars (and not the `0` literal).
+
+For pointers (address values), use `nullptr`, as this provides type-safety.
+
+Use `'\0'` for the null character. Using the correct type makes the code more readable.
+
+### `sizeof`
+
+Prefer `sizeof(varname)` to `sizeof(type)`.
+
+Use `sizeof(varname)` when you take the size of a particular variable. `sizeof(varname)` will update appropriately if someone changes the variable type either now or later. You may use `sizeof(type)` for code unrelated to any particular variable, such as code that manages an external or internal data format where a variable of an appropriate C++ type is not convenient.
+
+> <code>
+> MyStruct data;<br>
+> memset(&data, 0, sizeof(data));
+> </code>
+
+<br>
+
+> <code>
+> memset(&data, 0, sizeof(MyStruct));&ensp;&ensp;// Bad.
+> </code>
+
+<br>
+
+> <code>
+> if (raw_size < sizeof(int)) {<br>
+> &ensp;&ensp;LOG(ERROR) << "compressed record not big enough for count: " << raw_size;<br>
+> &ensp;&ensp;return false;<br>
+> }
+> </code>
+
+### Type Deduction (including `auto`)
+
+Use type deduction only if it makes the code clearer to readers who aren't familiar with the project, or if it makes the code safer. Do not use it merely to avoid the inconvenience of writing an explicit type.
+
+**Definition:**
+
+There are several contexts in which C++ allows (or even requires) types to be deduced by the compiler, rather than spelled out explicitly in the code:
+
+> **Function template argument deduction**<br>
+> A function template can be invoked without explicit template arguments. The compiler deduces those arguments from the types of the function arguments:
+> > <code>
+> > template &lt;typename T&gt;<br>
+> > void f(T t);<br>
+> > <br>
+> > f(0);&ensp;&ensp;// Invokes f&lt;int&gt;(0)
+> > </code>
+
+<br>
+
+> **`auto` variable declarations**<br>
+> A variable declaration can use the auto keyword in place of the type. The compiler deduces the type from the variable's initializer, following the same rules as function template argument deduction with the same initializer (so long as you don't use curly braces instead of parentheses).
+> > <code>
+> > auto a = 42;&ensp;&ensp;// a is an int<br>
+> > auto& b = a;&ensp;&ensp;// b is an int&<br>
+> > auto c = b;&ensp;&ensp;&ensp;// c is an int<br>
+> > auto d{42};&ensp;&ensp;&ensp;// d is an int, not a std::initializer_list&lt;int&gt;
+> > </code>
+>
+> <br>
+>
+> `auto` can be qualified with `const`, and can be used as part of a pointer or reference type, but it can't be used as a template argument. A rare variant of this syntax uses `decltype(auto)` instead of `auto`, in which case the deduced type is the result of applying `decltype` to the initializer.
+
+<br>
+
+> **Function return type deduction**<br>
+> `auto` (and `decltype(auto)`) can also be used in place of a function return type. The compiler deduces the return type from the return statements in the function body, following the same rules as for variable declarations:
+> > <code>
+> > auto f() { return 0; }&ensp;&ensp;// The return type of f is int
+> > </code>
+>
+> <br>
+>
+> Lambda expression return types can be deduced in the same way, but this is triggered by omitting the return type, rather than by an explicit `auto`. Confusingly, trailing return type syntax for functions also uses `auto` in the return-type position, but that doesn't rely on type deduction; it's just an alternate syntax for an explicit return type.
+
+<br>
+
+> **Generic lambdas**<br>
+> A lambda expression can use the `auto` keyword in place of one or more of its parameter types. This causes the lambda's call operator to be a function template instead of an ordinary function, with a separate template parameter for each `auto` function parameter:
+> > <code>
+> > // Sort `vec` in decreasing order<br>
+> > std::sort(vec.begin(), vec.end(), [](auto lhs, auto rhs) { return lhs > rhs; });
+> > </code>
+
+<br>
+
+> **Lambda init captures**<br>
+> Lambda captures can have explicit initializers, which can be used to declare wholly new variables rather than only capturing existing ones:
+> > <code>
+> > [x = 42, y = "foo"] { ... }&ensp;&ensp;// x is an int, and y is a const char*
+> > </code>
+>
+> <br>
+>
+> This syntax doesn't allow the type to be specified; instead, it's deduced using the rules for `auto` variables.
+
+<br>
+
+> **Class template argument deduction**<br>
+> See below.
+
+<br>
+
+> **Structured bindings**<br>
+> When declaring a tuple, struct, or array using `auto`, you can specify names for the individual elements instead of a name for the whole object; these names are called "structured bindings", and the whole declaration is called a "structured binding declaration". This syntax provides no way of specifying the type of either the enclosing object or the individual names:
+> > <code>
+> > auto [iter, success] = my_map.insert({key, value});<br>
+> > if (!success) {<br>
+> > &ensp;&ensp;iter->second = value;<br>
+> > }
+> > </code>
+>
+> <br>
+>
+> The `auto` can also be qualified with `const`, `&`, and `&&`, but note that these qualifiers technically apply to the anonymous tuple/struct/array, rather than the individual bindings. The rules that determine the types of the bindings are quite complex; the results tend to be unsurprising, except that the binding types typically won't be references even if the declaration declares a reference (but they will usually behave like references anyway).
+
+(These summaries omit many details and caveats; see the links for further information.)
+
+**Pros:**
+
+- C++ type names can be long and cumbersome, especially when they involve templates or namespaces.
+
+- When a C++ type name is repeated within a single declaration or a small code region, the repetition may not be aiding readability.
+
+- It is sometimes safer to let the type be deduced, since that avoids the possibility of unintended copies or type conversions.
+
+**Cons:**
+
+C++ code is usually clearer when types are explicit, especially when type deduction would depend on information from distant parts of the code. In expressions like:
+
+> <code>
+> auto foo = x.add_foo();<br>
+> auto i = y.Find(key);
+> </code>
+
+<br>
+
+it may not be obvious what the resulting types are if the type of `y` isn't very well known, or if `y` was declared many lines earlier.
+
+Programmers have to understand when type deduction will or won't produce a reference type, or they'll get copies when they didn't mean to.
+
+If a deduced type is used as part of an interface, then a programmer might change its type while only intending to change its value, leading to a more radical API change than intended.
+
+**Decision:**
+
+The fundamental rule is: use type deduction only to make the code clearer or safer, and do not use it merely to avoid the inconvenience of writing an explicit type. When judging whether the code is clearer, keep in mind that your readers are not necessarily on your team, or familiar with your project, so types that you and your reviewer experience as unnecessary clutter will very often provide useful information to others. For example, you can assume that the return type of `make_unique<Foo>()` is obvious, but the return type of `MyWidgetFactory()` probably isn't.
+
+These principles apply to all forms of type deduction, but the details vary, as described in the following sections.
+
+#### Function template argument deduction
+
+Function template argument deduction is almost always OK. Type deduction is the expected default way of interacting with function templates, because it allows function templates to act like infinite sets of ordinary function overloads. Consequently, function templates are almost always designed so that template argument deduction is clear and safe, or doesn't compile.
+
+#### Local variable type deduction
+
+For local variables, you can use type deduction to make the code clearer by eliminating type information that is obvious or irrelevant, so that the reader can focus on the meaningful parts of the code:
+
+> <code>
+> std::unique_ptr&lt;WidgetWithBellsAndWhistles&gt; widget =<br>
+> &ensp;&ensp;&ensp;&ensp;std::make_unique&lt;WidgetWithBellsAndWhistles&gt;(arg1, arg2);
+> absl::flat_hash_map&lt;std::string,<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;std::unique_ptr&lt;WidgetWithBellsAndWhistles&gt;&gt;::const_iterator<br>
+> &ensp;&ensp;&ensp;&ensp;it = my_map_.find(key);<br>
+> std::array&lt;int, 6&gt; numbers = {4, 8, 15, 16, 23, 42};
+> </code>
+
+<br>
+
+> <code>
+> auto widget = std::make_unique&lt;WidgetWithBellsAndWhistles&gt;(arg1, arg2);<br>
+> auto it = my_map_.find(key);<br>
+> std::array numbers = {4, 8, 15, 16, 23, 42};
+> </code>
+
+<br>
+
+Types sometimes contain a mixture of useful information and boilerplate, such as it in the example above: it's obvious that the type is an iterator, and in many contexts the container type and even the key type aren't relevant, but the type of the values is probably useful. In such situations, it's often possible to define local variables with explicit types that convey the relevant information:
+
+> <code>
+> if (auto it = my_map_.find(key); it != my_map_.end()) {<br>
+> &ensp;&ensp;WidgetWithBellsAndWhistles& widget = *it->second;<br>
+> &ensp;&ensp;// Do stuff with `widget`<br>
+> }
+> </code>
+
+<br>
+
+If the type is a template instance, and the parameters are boilerplate but the template itself is informative, you can use class template argument deduction to suppress the boilerplate. However, cases where this actually provides a meaningful benefit are quite rare. Note that class template argument deduction is also subject to a separate style rule.
+
+Do not use `decltype(auto)` if a simpler option will work, because it's a fairly obscure feature, so it has a high cost in code clarity.
+
+#### Return type deduction
+
+Use return type deduction (for both functions and lambdas) only if the function body has a very small number of return statements, and very little other code, because otherwise the reader may not be able to tell at a glance what the return type is. Furthermore, use it only if the function or lambda has a very narrow scope, because functions with deduced return types don't define abstraction boundaries: the implementation is the interface. In particular, public functions in header files should almost never have deduced return types.
+
+#### Parameter type deduction
+
+`auto` parameter types for lambdas should be used with caution, because the actual type is determined by the code that calls the lambda, rather than by the definition of the lambda. Consequently, an explicit type will almost always be clearer unless the lambda is explicitly called very close to where it's defined (so that the reader can easily see both), or the lambda is passed to an interface so well-known that it's obvious what arguments it will eventually be called with (e.g., the `std::sort` example above).
+
+#### Lambda init captures
+
+Init captures are covered by a more specific style rule, which largely supersedes the general rules for type deduction.
+
+#### Structured bindings
+
+Unlike other forms of type deduction, structured bindings can actually give the reader additional information, by giving meaningful names to the elements of a larger object. This means that a structured binding declaration may provide a net readability improvement over an explicit type, even in cases where `auto` would not. Structured bindings are especially beneficial when the object is a pair or tuple (as in the `insert` example above), because they don't have meaningful field names to begin with, but note that you generally shouldn't use pairs or tuples unless a pre-existing API like `insert` forces you to.
+
+If the object being bound is a struct, it may sometimes be helpful to provide names that are more specific to your usage, but keep in mind that this may also mean the names are less recognizable to your reader than the field names. We recommend using a comment to indicate the name of the underlying field, if it doesn't match the name of the binding, using the same syntax as for function parameter comments:
+
+> <code>
+> auto [/*field_name1=*/bound_name1, /*field_name2=*/bound_name2] = ...
+> </code>
+
+<br>
+
+As with function parameter comments, this can enable tools to detect if you get the order of the fields wrong.
