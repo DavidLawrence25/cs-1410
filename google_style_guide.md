@@ -153,7 +153,7 @@
 				<li><a href="#looping-and-branching-statements">Looping and Branching Statements</a></li>
 				<li><a href="#pointer-and-reference-expressions">Pointer and Reference Expressions</a></li>
 				<li><a href="#boolean-expressions">Boolean Expressions</a></li>
-				<li><a>Return Values</a></li>
+				<li><a href="#return-values">Return Values</a></li>
 				<li><a>Variable and Array Initialization</a></li>
 				<li><a>Preprocessor Directives</a></li>
 				<li><a>Class Format</a></li>
@@ -3477,3 +3477,23 @@ In this example, the logical AND operator is always at the end of the lines:
 <br>
 
 Note that when the code wraps in this example, both of the `&&` logical AND operators are at the end of the line. This is more common in Google code, though wrapping all operators at the beginning of the line is also allowed. Feel free to insert extra parentheses judiciously because they can be very helpful in increasing readability when used appropriately, but be careful about overuse. Also note that you should always use the punctuation operators, such as `&&` and `~`, rather than the word operators, such as `and` and `compl`.
+
+### Return Values
+
+Do not needlessly surround the `return` expression with parentheses.
+
+Use parentheses in `return expr;` only where you would use them in `x = expr;`.
+
+> <code>
+> return result;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// No parentheses in the simple case.<br>
+> // Parentheses OK to make a complex expression more readable.<br>
+> return (some_long_condition &&<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;another_condition);
+> </code>
+
+<br>
+
+> <code>
+> return (value);&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// You wouldn't write var = (value);
+> return(result);&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// return is not a function!
+> </code>
