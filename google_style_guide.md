@@ -3284,57 +3284,57 @@ For these statements:
 - Inside the controlled blocks, put one line break immediately after the opening brace, and one line break immediately before the closing brace.
 
 > <code>
-> if (condition) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Good - no spaces inside parentheses, space before brace.<br>
-> &nbsp;&nbsp;DoOneThing();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Good - two-space indent.<br>
-> &nbsp;&nbsp;DoAnotherThing();<br>
-> } else if (int a = f(); a != 3) {&nbsp;&nbsp;// Good - closing brace on new line, else on same line.<br>
-> &nbsp;&nbsp;DoAThirdThing(a);<br>
+> if (condition) {&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Good - no spaces inside parentheses, space before brace.<br>
+> &ensp;&ensp;DoOneThing();&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Good - two-space indent.<br>
+> &ensp;&ensp;DoAnotherThing();<br>
+> } else if (int a = f(); a != 3) {&ensp;&ensp;// Good - closing brace on new line, else on same line.<br>
+> &ensp;&ensp;DoAThirdThing(a);<br>
 > } else {<br>
-> &nbsp;&nbsp;DoNothing();<br>
+> &ensp;&ensp;DoNothing();<br>
 > }<br>
 > <br>
 > // Good - the same rules apply to loops.<br>
 > while (condition) {<br>
-> &nbsp;&nbsp;RepeatAThing();<br>
+> &ensp;&ensp;RepeatAThing();<br>
 > }<br>
 > <br>
 > // Good - the same rules apply to loops.<br>
 > do {<br>
-> &nbsp;&nbsp;RepeatAThing();<br>
+> &ensp;&ensp;RepeatAThing();<br>
 > } while (condition);<br>
 > <br>
 > // Good - the same rules apply to loops.<br>
 > for (int i = 0; i < 10; ++i) {<br>
-> &nbsp;&nbsp;RepeatAThing();<br>
+> &ensp;&ensp;RepeatAThing();<br>
 > }
 > </code>
 
 <br>
 
 > <code>
-> if(condition) {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space missing after `if`.<br>
-> else if ( condition ) {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space between the parentheses and the condition.<br>
-> else if (condition){}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space missing before `{`.<br>
-> else if(condition){}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - multiple spaces missing.<br>
+> if(condition) {}&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad - space missing after `if`.<br>
+> else if ( condition ) {}&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad - space between the parentheses and the condition.<br>
+> else if (condition){}&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad - space missing before `{`.<br>
+> else if(condition){}&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad - multiple spaces missing.<br>
 > <br>
-> for (int a = f();a == 10) {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space missing after the semicolon.<br>
+> for (int a = f();a == 10) {}&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad - space missing after the semicolon.<br>
 > <br>
 > // Bad - `if ... else` statement does not have braces everywhere.<br>
 > if (condition)<br>
-> &nbsp;&nbsp;foo;<br>
+> &ensp;&ensp;foo;<br>
 > else {<br>
-> &nbsp;&nbsp;bar;<br>
+> &ensp;&ensp;bar;<br>
 > }<br>
 > <br>
 > // Bad - `if` statement too long to omit braces.<br>
 > if (condition)<Br>
-> &nbsp;&nbsp;// Comment<br>
-> &nbsp;&nbsp;DoSomething();<br>
+> &ensp;&ensp;// Comment<br>
+> &ensp;&ensp;DoSomething();<br>
 > <br>
 > // Bad - `if` statement too long to omit braces.<br>
 > if (condition1 &&<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;condition2)<br>
-> &nbsp;&nbsp;DoSomething();
+> &ensp;&ensp;&ensp;&ensp;condition2)<br>
+> &ensp;&ensp;DoSomething();
 > </code>
 
 <br>
@@ -3350,7 +3350,7 @@ For historical reasons, we allow one exception to the above rules: the curly bra
 > <br>
 > // OK - condition fits on one line, body fits on another.<br>
 > if (x == kBar)<br>
-> &nbsp;&nbsp;Bar(arg1, arg2, arg3);<br>
+> &ensp;&ensp;Bar(arg1, arg2, arg3);<br>
 > </code>
 
 <br>
@@ -3375,13 +3375,13 @@ Use this style only when the statement is brief, and consider that loops and bra
 
 > <code>
 > switch (var) {<br>
-> &nbsp;&nbsp;case 0: {&nbsp;&nbsp;// 2 space indent<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;Foo();&nbsp;&nbsp;&nbsp;// 4 space indent<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;break;<br>
-> &nbsp;&nbsp;}<br>
-> &nbsp;&nbsp;default: {<br>
-> &nbsp;&nbsp;&nbsp;&nbsp;Bar();<br>
-> &nbsp;&nbsp;}<br>
+> &ensp;&ensp;case 0: {&ensp;&ensp;// 2 space indent<br>
+> &ensp;&ensp;&ensp;&ensp;Foo();&ensp;&ensp;&ensp;// 4 space indent<br>
+> &ensp;&ensp;&ensp;&ensp;break;<br>
+> &ensp;&ensp;}<br>
+> &ensp;&ensp;default: {<br>
+> &ensp;&ensp;&ensp;&ensp;Bar();<br>
+> &ensp;&ensp;}<br>
 > }
 > </code>
 
@@ -3390,15 +3390,15 @@ Use this style only when the statement is brief, and consider that loops and bra
 Empty loop bodies should use either an empty pair of braces or continue with no braces, rather than a single semicolon.
 
 > <code>
-> while (condition) {}&nbsp;&nbsp;// Good - `{}` indicates no logic.<br>
+> while (condition) {}&ensp;&ensp;// Good - `{}` indicates no logic.<br>
 > while (condition) {<br>
-> &nbsp;&nbsp;// Comments are okay, too<br>
+> &ensp;&ensp;// Comments are okay, too<br>
 > }<br>
-> while (condition) continue;&nbsp;&nbsp;// Good - `continue` indicates no logic.
+> while (condition) continue;&ensp;&ensp;// Good - `continue` indicates no logic.
 > </code>
 
 <br>
 
 > <code>
-> while (condition);&nbsp;&nbsp;// Bad - looks like part of `do-while` loop.
+> while (condition);&ensp;&ensp;// Bad - looks like part of `do-while` loop.
 > </code>
