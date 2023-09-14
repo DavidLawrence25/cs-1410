@@ -124,17 +124,17 @@
 		</td>
 	</tr>
 	<tr>
-		<td><a>Comments</a></td>
+		<td><a href="#comments">Comments</a></td>
 		<td>
 			<ul>
-				<li><a>Comment Style</a></li>
-				<li><a>File Comments</a></li>
-				<li><a>Class Comments</a></li>
-				<li><a>Function Comments</a></li>
-				<li><a>Variable Comments</a></li>
-				<li><a>Implementation Comments</a></li>
-				<li><a>Punctuation, Spelling, and Grammar</a></li>
-				<li><a>TODO Comments</a></li>
+				<li><a href="#comment-style">Comment Style</a></li>
+				<li><a href="#file-comments">File Comments</a></li>
+				<li><a href="#class-comments">Class Comments</a></li>
+				<li><a href="#function-comments">Function Comments</a></li>
+				<li><a href="#variable-comments">Variable Comments</a></li>
+				<li><a href="#implementation-comments">Implementation Comments</a></li>
+				<li><a href="#punctuation-spelling-and-grammar">Punctuation, Spelling, and Grammar</a></li>
+				<li><a href="#todo-comments">TODO Comments</a></li>
 			</ul>
 		</td>
 	</tr>
@@ -2740,3 +2740,226 @@ STL-like entity; follows STL naming conventions
 
 `LONGLONG_MAX`<br>
 a constant, as in `INT_MAX`
+
+## Comments
+
+Comments are absolutely vital to keeping our code readable. The following rules describe what you should comment and where. But remember: while comments are very important, the best code is self-documenting. Giving sensible names to types and variables is much better than using obscure names that you must then explain through comments.
+
+When writing your comments, write for your audience: the next contributor who will need to understand your code. Be generous — the next one may be you!
+
+### Comment Style
+
+Use either the `//` or `/* */` syntax, as long as you are consistent.
+
+You can use either the `//` or the `/* */` syntax; however, `//` is much more common. Be consistent with how you comment and what style you use where.
+
+### File Comments
+
+Start each file with license boilerplate.
+
+If a source file (such as a `.h` file) declares multiple user-facing abstractions (common functions, related classes, etc.), include a comment describing the collection of those abstractions. Include enough detail for future authors to know what does not fit there. However, the detailed documentation about individual abstractions belongs with those abstractions, not at the file level.
+
+For instance, if you write a file comment for `frobber.h`, you do not need to include a file comment in `frobber.cc` or `frobber_test.cc`. On the other hand, if you write a collection of classes in `registered_objects.cc` that has no associated header file, you must include a file comment in `registered_objects.cc`.
+
+#### Legal Notice and Author Line
+
+Every file should contain license boilerplate. Choose the appropriate boilerplate for the license used by the project (for example, Apache 2.0, BSD, LGPL, GPL).
+
+If you make significant changes to a file with an author line, consider deleting the author line. New files should usually not contain copyright notice or author line.
+
+### Class Comments
+
+Every non-obvious class or struct declaration should have an accompanying comment that describes what it is for and how it should be used.
+
+> <code>
+> // Iterates over the contents of a GargantuanTable.<br>
+> // Example:<br>
+> // &ensp;&ensp;&ensp;std::unique_ptr&lt;GargantuanTableIterator&gt; iter = table->NewIterator();<br>
+> // &ensp;&ensp;&ensp;for (iter->Seek("foo"); !iter->done(); iter->Next()) {<br>
+> // &ensp;&ensp;&ensp;&ensp;&ensp;process(iter->key(), iter->value());<br>
+> // &ensp;&ensp;&ensp;}<br>
+> class GargantuanTableIterator {<br>
+> &ensp;&ensp;...<br>
+> };
+> </code>
+
+<br>
+
+The class comment should provide the reader with enough information to know how and when to use the class, as well as any additional considerations necessary to correctly use the class. Document the synchronization assumptions the class makes, if any. If an instance of the class can be accessed by multiple threads, take extra care to document the rules and invariants surrounding multithreaded use.
+
+The class comment is often a good place for a small example code snippet demonstrating a simple and focused usage of the class.
+
+When sufficiently separated (e.g., `.h` and `.cc` files), comments describing the use of the class should go together with its interface definition; comments about the class operation and implementation should accompany the implementation of the class's methods.
+
+### Function Comments
+
+Declaration comments describe use of the function (when it is non-obvious); comments at the definition of a function describe operation.
+
+#### Function Declarations
+
+Almost every function declaration should have comments immediately preceding it that describe what the function does and how to use it. These comments may be omitted only if the function is simple and obvious (e.g., simple accessors for obvious properties of the class). Private methods and functions declared in `.cc` files are not exempt. Function comments should be written with an implied subject of *This function* and should start with the verb phrase; for example, "Opens the file", rather than "Open the file". In general, these comments do not describe how the function performs its task. Instead, that should be left to comments in the function definition.
+
+Types of things to mention in comments at the function declaration:
+
+- What the inputs and outputs are. If function argument names are provided in \`backticks\`, then code-indexing tools may be able to present the documentation better.
+
+- For class member functions: whether the object remembers reference or pointer arguments beyond the duration of the method call. This is quite common for pointer/reference arguments to constructors.
+
+- For each pointer argument, whether it is allowed to be null and what happens if it is.
+
+- For each output or input/output argument, what happens to any state that argument is in. (E.g. is the state appended to or overwritten?).
+
+- If there are any performance implications of how a function is used.
+
+Here is an example:
+
+> <code>
+> // Returns an iterator for this table, positioned at the first entry<br>
+> // lexically greater than or equal to `start_word`. If there is no<br>
+> // such entry, returns a null pointer. The client must not use the<br>
+> // iterator after the underlying GargantuanTable has been destroyed.<br>
+> //<br>
+> // This method is equivalent to:<br>
+> // &ensp;&ensp;&ensp;std::unique_ptr&lt;Iterator&gt; iter = table->NewIterator();<br>
+> // &ensp;&ensp;&ensp;iter->Seek(start_word);<br>
+> // &ensp;&ensp;&ensp;return iter;<br>
+> std::unique_ptr&lt;Iterator&gt; GetIterator(absl::string_view start_word) const;
+> </code>
+
+<br>
+
+However, do not be unnecessarily verbose or state the completely obvious.
+
+When documenting function overrides, focus on the specifics of the override itself, rather than repeating the comment from the overridden function. In many of these cases, the override needs no additional documentation and thus no comment is required.
+
+When commenting constructors and destructors, remember that the person reading your code knows what constructors and destructors are for, so comments that just say something like "destroys this object" are not useful. Document what constructors do with their arguments (for example, if they take ownership of pointers), and what cleanup the destructor does. If this is trivial, just skip the comment. It is quite common for destructors not to have a header comment.
+
+#### Function Definitions
+
+If there is anything tricky about how a function does its job, the function definition should have an explanatory comment. For example, in the definition comment you might describe any coding tricks you use, give an overview of the steps you go through, or explain why you chose to implement the function in the way you did rather than using a viable alternative. For instance, you might mention why it must acquire a lock for the first half of the function but why it is not needed for the second half.
+
+Note you should not just repeat the comments given with the function declaration, in the `.h` file or wherever. It's okay to recapitulate briefly what the function does, but the focus of the comments should be on how it does it.
+
+### Variable Comments
+
+In general the actual name of the variable should be descriptive enough to give a good idea of what the variable is used for. In certain cases, more comments are required.
+
+#### Class Data Members
+
+The purpose of each class data member (also called an instance variable or member variable) must be clear. If there are any invariants (special values, relationships between members, lifetime requirements) not clearly expressed by the type and name, they must be commented. However, if the type and name suffice (`int num_events_;`), no comment is needed.
+
+In particular, add comments to describe the existence and meaning of sentinel values, such as `nullptr` or `-1`, when they are not obvious. For example:
+
+> <code>
+> private:<br>
+> &ensp;// Used to bounds-check table accesses. -1 means<br>
+> &ensp;// that we don't yet know how many entries the table has.<br>
+> &ensp;int num_total_entries_;
+> </code>
+
+#### Global Variables
+
+All global variables should have a comment describing what they are, what they are used for, and (if unclear) why they need to be global. For example:
+
+> <code>
+> // The total number of test cases that we run through in this regression test.<br>
+> const int kNumTestCases = 6;
+> </code>
+
+### Implementation Comments
+
+In your implementation you should have comments in tricky, non-obvious, interesting, or important parts of your code.
+
+#### Explanatory Comments
+
+Tricky or complicated code blocks should have comments before them.
+
+#### Function Argument Comments
+
+When the meaning of a function argument is nonobvious, consider one of the following remedies:
+
+- If the argument is a literal constant, and the same constant is used in multiple function calls in a way that tacitly assumes they're the same, you should use a named constant to make that constraint explicit, and to guarantee that it holds.
+
+- Consider changing the function signature to replace a bool argument with an enum argument. This will make the argument values self-describing.
+
+- For functions that have several configuration options, consider defining a single class or struct to hold all the options , and pass an instance of that. This approach has several advantages. Options are referenced by name at the call site, which clarifies their meaning. It also reduces function argument count, which makes function calls easier to read and write. As an added benefit, you don't have to change call sites when you add another option.
+
+- Replace large or complex nested expressions with named variables.
+
+- As a last resort, use comments to clarify argument meanings at the call site.
+
+Consider the following example:
+
+> <code>
+> // What are these arguments?<br>
+> const DecimalNumber product = CalculateProduct(values, 7, false, nullptr);
+> </code>
+
+<br>
+
+versus:
+
+> <code>
+> ProductOptions options;<br>
+> options.set_precision_decimals(7);<br>
+> options.set_use_cache(ProductOptions::kDontUseCache);<br>
+> const DecimalNumber product =<br>
+> &ensp;&ensp;&ensp;&ensp;CalculateProduct(values, options, /*completion_callback=*/nullptr);
+> </code>
+
+#### Don'ts
+
+Do not state the obvious. In particular, don't literally describe what code does, unless the behavior is nonobvious to a reader who understands C++ well. Instead, provide higher level comments that describe why the code does what it does, or make the code self describing.
+
+Compare this:
+
+> <code>
+> // Find the element in the vector.&ensp;&ensp;<-- Bad: obvious!<br>
+> if (std::find(v.begin(), v.end(), element) != v.end()) {<br>
+> &ensp;&ensp;Process(element);<br>
+> }
+> </code>
+
+<br>
+
+To this:
+
+> <code>
+> // Process "element" unless it was already processed.<br>
+> if (std::find(v.begin(), v.end(), element) != v.end()) {<br>
+> &ensp;&ensp;Process(element);<br>
+> }
+> </code>
+
+Self-describing code doesn't need a comment. The comment from the example above would be obvious:
+
+> <code>
+> if (!IsAlreadyProcessed(element)) {<br>
+> &ensp;&ensp;Process(element);<br>
+> }
+> </code>
+
+### Punctuation, Spelling, and Grammar
+
+Pay attention to punctuation, spelling, and grammar; it is easier to read well-written comments than badly written ones.
+
+Comments should be as readable as narrative text, with proper capitalization and punctuation. In many cases, complete sentences are more readable than sentence fragments. Shorter comments, such as comments at the end of a line of code, can sometimes be less formal, but you should be consistent with your style.
+
+Although it can be frustrating to have a code reviewer point out that you are using a comma when you should be using a semicolon, it is very important that source code maintain a high level of clarity and readability. Proper punctuation, spelling, and grammar help with that goal.
+
+### `TODO` Comments
+
+Use `TODO` comments for code that is temporary, a short-term solution, or good-enough but not perfect.
+
+`TODO`s should include the string `TODO` in all caps, followed by the bug ID, name, e-mail address, or other identifier of the person or issue with the best context about the problem referenced by the `TODO`.
+
+> <code>
+> // TODO: bug 12345678 - Remove this after the 2047q4 compatibility window expires.<br>
+> // TODO: example.com/my-design-doc - Manually fix up this code the next time it's touched.<br>
+> // TODO(bug 12345678): Update this list after the Foo service is turned down.<br>
+> // TODO(John): Use a "\\*" here for concatenation operator.
+> </code>
+
+<br>
+
+If your `TODO` is of the form "At a future date do something" make sure that you either include a very specific date ("Fix by November 2005") or a very specific event ("Remove this code when all clients can handle XML responses.").
