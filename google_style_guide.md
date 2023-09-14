@@ -93,12 +93,12 @@
 				<li><a href="#class-template-argument-deduction">Class Template Argument Deduction</a></li>
 				<li><a href="#designated-initializers">Designated Initializers</a></li>
 				<li><a href="#lambda-expressions">Lambda Expressions</a></li>
-				<li><a>Template Metaprogramming</a></li>
-				<li><a>Boost</a></li>
-				<li><a>Other C++ Features</a></li>
-				<li><a>Nonstandard Extensions</a></li>
-				<li><a>Aliases</a></li>
-				<li><a>Switch Statements</a></li>
+				<li><a href="#template-metaprogramming">Template Metaprogramming</a></li>
+				<li><a href="#boost">Boost</a></li>
+				<li><a href="#some-other-c-features">Other C++ Features</a></li>
+				<li><a href="#nonstandard-extensions">Nonstandard Extensions</a></li>
+				<li><a href="#aliases">Aliases</a></li>
+				<li><a href="#switch-statements">Switch Statements</a></li>
 			</ul>
 		</td>
 	</tr>
@@ -2229,3 +2229,251 @@ The type of a capture with an initializer is deduced using the same rules as `au
 - Use captures only to actually capture variables from the enclosing scope. Do not use captures with initializers to introduce new names, or to substantially change the meaning of an existing name. Instead, declare a new variable in the conventional way and then capture it, or avoid the lambda shorthand and define a function object explicitly.
 
 - See the section on type deduction for guidance on specifying the parameter and return types.
+
+### Template Metaprogramming
+
+Avoid complicated template metaprogramming.
+
+**Definition:**
+
+Template metaprogramming refers to a family of techniques that exploit the fact that the C++ template instantiation mechanism is Turing complete and can be used to perform arbitrary compile-time computation in the type domain.
+
+**Pros:**
+
+Template metaprogramming allows extremely flexible interfaces that are type safe and high performance. Facilities like GoogleTest, `std::tuple`, `std::function`, and Boost.Spirit would be impossible without it.
+
+**Cons:**
+
+The techniques used in template metaprogramming are often obscure to anyone but language experts. Code that uses templates in complicated ways is often unreadable, and is hard to debug or maintain.
+
+Template metaprogramming often leads to extremely poor compile time error messages: even if an interface is simple, the complicated implementation details become visible when the user does something wrong.
+
+Template metaprogramming interferes with large scale refactoring by making the job of refactoring tools harder. First, the template code is expanded in multiple contexts, and it's hard to verify that the transformation makes sense in all of them. Second, some refactoring tools work with an AST that only represents the structure of the code after template expansion. It can be difficult to automatically work back to the original source construct that needs to be rewritten.
+
+**Decision:**
+
+Template metaprogramming sometimes allows cleaner and easier-to-use interfaces than would be possible without it, but it's also often a temptation to be overly clever. It's best used in a small number of low level components where the extra maintenance burden is spread out over a large number of uses.
+
+Think twice before using template metaprogramming or other complicated template techniques; think about whether the average member of your team will be able to understand your code well enough to maintain it after you switch to another project, or whether a non-C++ programmer or someone casually browsing the code base will be able to understand the error messages or trace the flow of a function they want to call. If you're using recursive template instantiations or type lists or metafunctions or expression templates, or relying on SFINAE or on the `sizeof` trick for detecting function overload resolution, then there's a good chance you've gone too far.
+
+If you use template metaprogramming, you should expect to put considerable effort into minimizing and isolating the complexity. You should hide metaprogramming as an implementation detail whenever possible, so that user-facing headers are readable, and you should make sure that tricky code is especially well commented. You should carefully document how the code is used, and you should say something about what the "generated" code looks like. Pay extra attention to the error messages that the compiler emits when users make mistakes. The error messages are part of your user interface, and your code should be tweaked as necessary so that the error messages are understandable and actionable from a user point of view.
+
+### Boost
+
+Use only approved libraries from the Boost library collection.
+
+**Definition:**
+
+The Boost library collection is a popular collection of peer-reviewed, free, open-source C++ libraries.
+
+**Pros:**
+
+Boost code is generally very high-quality, is widely portable, and fills many important gaps in the C++ standard library, such as type traits and better binders.
+
+**Cons:**
+
+Some Boost libraries encourage coding practices which can hamper readability, such as metaprogramming and other advanced template techniques, and an excessively "functional" style of programming.
+
+**Decision:**
+
+In order to maintain a high level of readability for all contributors who might read and maintain code, we only allow an approved subset of Boost features. Currently, the following libraries are permitted:
+
+- Call Traits from `boost/call_traits.hpp`
+
+- Compressed Pair from `boost/compressed_pair.hpp`
+
+- The Boost Graph Library (BGL) from `boost/graph`, except serialization (`adj_list_serialize.hpp`) and parallel/distributed algorithms and data structures (`boost/graph/parallel/*` and `boost/graph/distributed/*`).
+
+- Property Map from `boost/property_map`, except parallel/distributed property maps (`boost/property_map/parallel/*`).
+
+- Iterator from `boost/iterator`
+
+- The part of Polygon that deals with Voronoi diagram construction and doesn't depend on the rest of Polygon: `boost/polygon/voronoi_builder.hpp`, `boost/polygon/voronoi_diagram.hpp`, and `boost/polygon/voronoi_geometry_type.hpp`
+
+- Bimap from `boost/bimap`
+
+- Statistical Distributions and Functions from `boost/math/distributions`
+
+- Special Functions from `boost/math/special_functions`
+
+- Root Finding & Minimization Functions from `boost/math/tools`
+
+- Multi-index from `boost/multi_index`
+
+- Heap from `boost/heap`
+
+- The flat containers from Container: `boost/container/flat_map`, and `boost/container/flat_set`
+
+- Intrusive from `boost/intrusive`.
+
+- The `boost/sort` library.
+
+- Preprocessor from `boost/preprocessor`.
+
+We are actively considering adding other Boost features to the list, so this list may be expanded in the future.
+
+### Some Other C++ Features
+
+As with Boost, some modern C++ extensions encourage coding practices that hamper readability—for example by removing checked redundancy (such as type names) that may be helpful to readers, or by encouraging template metaprogramming. Other extensions duplicate functionality available through existing mechanisms, which may lead to confusion and conversion costs.
+
+**Decision:**
+
+In addition to what's described in the rest of the style guide, the following C++ features may not be used:
+
+- Compile-time rational numbers (`<ratio>`), because of concerns that it's tied to a more template-heavy interface style.
+
+- The `<cfenv>` and `<fenv.h>` headers, because many compilers do not support those features reliably.
+
+- The `<filesystem>` header, which does not have sufficient support for testing, and suffers from inherent security vulnerabilities.
+
+### Nonstandard Extensions
+
+Nonstandard extensions to C++ may not be used unless otherwise specified.
+
+**Definition:**
+
+Compilers support various extensions that are not part of standard C++. Such extensions include GCC's `__attribute__`, intrinsic functions such as `__builtin_prefetch` or SIMD, `#pragma`, inline assembly, `__COUNTER__`, `__PRETTY_FUNCTION__`, compound statement expressions (e.g., `foo = ({ int x; Bar(&x); x })`), variable-length arrays and `alloca()`, and the "Elvis Operator" `a?:b`.
+
+**Pros:**
+
+- Nonstandard extensions may provide useful features that do not exist in standard C++.
+
+- Important performance guidance to the compiler can only be specified using extensions.
+
+**Cons:**
+
+- Nonstandard extensions do not work in all compilers. Use of nonstandard extensions reduces portability of code.
+
+- Even if they are supported in all targeted compilers, the extensions are often not well-specified, and there may be subtle behavior differences between compilers.
+
+- Nonstandard extensions add to the language features that a reader must know to understand the code.
+
+- Nonstandard extensions require additional work to port across architectures.
+
+**Decision:**
+
+Do not use nonstandard extensions. You may use portability wrappers that are implemented using nonstandard extensions, so long as those wrappers are provided by a designated project-wide portability header.
+
+### Aliases
+
+Public aliases are for the benefit of an API's user, and should be clearly documented.
+
+**Definition:**
+
+There are several ways to create names that are aliases of other entities:
+
+> <code>
+> typedef Foo Bar;
+> using Bar = Foo;
+> using other_namespace::Foo;
+> </code>
+
+<br>
+
+In new code, `using` is preferable to `typedef`, because it provides a more consistent syntax with the rest of C++ and works with templates.
+
+Like other declarations, aliases declared in a header file are part of that header's public API unless they're in a function definition, in the private portion of a class, or in an explicitly-marked internal namespace. Aliases in such areas or in `.cc` files are implementation details (because client code can't refer to them), and are not restricted by this rule.
+
+**Pros:**
+
+- Aliases can improve readability by simplifying a long or complicated name.
+
+- Aliases can reduce duplication by naming in one place a type used repeatedly in an API, which might make it easier to change the type later.
+
+**Cons:**
+
+- When placed in a header where client code can refer to them, aliases increase the number of entities in that header's API, increasing its complexity.
+
+- Clients can easily rely on unintended details of public aliases, making changes difficult.
+
+- It can be tempting to create a public alias that is only intended for use in the implementation, without considering its impact on the API, or on maintainability.
+
+- Aliases can create risk of name collisions
+
+- Aliases can reduce readability by giving a familiar construct an unfamiliar name
+
+- Type aliases can create an unclear API contract: it is unclear whether the alias is guaranteed to be identical to the type it aliases, to have the same API, or only to be usable in specified narrow ways
+
+**Decision:**
+
+Don't put an alias in your public API just to save typing in the implementation; do so only if you intend it to be used by your clients.
+
+When defining a public alias, document the intent of the new name, including whether it is guaranteed to always be the same as the type it's currently aliased to, or whether a more limited compatibility is intended. This lets the user know whether they can treat the types as substitutable or whether more specific rules must be followed, and can help the implementation retain some degree of freedom to change the alias.
+
+Don't put namespace aliases in your public API. (See also Namespaces).
+
+For example, these aliases document how they are intended to be used in client code:
+
+> <code>
+> namespace mynamespace {<br>
+> // Used to store field measurements. DataPoint may change from Bar* to some internal type.<br>
+> // Client code should treat it as an opaque pointer.<br>
+> using DataPoint = ::foo::Bar*;<br>
+> <br>
+> // A set of measurements. Just an alias for user convenience.<br>
+> using TimeSeries = std::unordered_set&lt;DataPoint, std::hash&lt;DataPoint&gt;, DataPointComparator&gt;;<br>
+> }&ensp;&ensp;// namespace mynamespace
+> </code>
+
+<br>
+
+These aliases don't document intended use, and half of them aren't meant for client use:
+
+> <code>
+> namespace mynamespace {<br>
+> // Bad: none of these say how they should be used.<br>
+> using DataPoint = ::foo::Bar*;<br>
+> using ::std::unordered_set;&ensp;&ensp;// Bad: just for local convenience<br>
+> using ::std::hash;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad: just for local convenience<br>
+> typedef unordered_set&lt;DataPoint, hash&lt;DataPoint&gt;, DataPointComparator&gt; TimeSeries;<br>
+> }&ensp;&ensp;// namespace mynamespace
+> </code>
+
+However, local convenience aliases are fine in function definitions, `private` sections of classes, explicitly marked internal namespaces, and in `.cc` files:
+
+> <code>
+> // In a .cc file<br>
+> using ::foo::Bar;
+> </code>
+
+### Switch Statements
+
+If not conditional on an enumerated value, switch statements should always have a `default` case (in the case of an enumerated value, the compiler will warn you if any values are not handled). If the default case should never execute, treat this as an error. For example:
+
+> <code>
+> switch (var) {<br>
+> &ensp;&ensp;case 0: {<br>
+> &ensp;&ensp;&ensp;&ensp;...<br>
+> &ensp;&ensp;&ensp;&ensp;break;<br>
+> &ensp;&ensp;}<br>
+> &ensp;&ensp;case 1: {<br>
+> &ensp;&ensp;&ensp;&ensp;...<br>
+> &ensp;&ensp;&ensp;&ensp;break;<br>
+> &ensp;&ensp;}<br>
+> &ensp;&ensp;default: {<br>
+> &ensp;&ensp;&ensp;&ensp;LOG(FATAL) << "Invalid value in switch statement: " << var;<br>
+> &ensp;&ensp;}<br>
+> }
+> </code>
+
+Fall-through from one case label to another must be annotated using the `[[fallthrough]];` attribute. `[[fallthrough]];` should be placed at a point of execution where a fall-through to the next case label occurs. A common exception is consecutive case labels without intervening code, in which case no annotation is needed.
+
+> <code>
+> switch (x) {<br>
+> &ensp;&ensp;case 41:&ensp;&ensp;// No annotation needed here.<br>
+> &ensp;&ensp;case 43:<br>
+> &ensp;&ensp;&ensp;&ensp;if (dont_be_picky) {<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Use this instead of or along with annotations in comments.<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;[[fallthrough]];<br>
+> &ensp;&ensp;&ensp;&ensp;} else {<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;CloseButNoCigar();<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;break;<br>
+> &ensp;&ensp;&ensp;&ensp;}<br>
+> &ensp;&ensp;case 42:<br>
+> &ensp;&ensp;&ensp;&ensp;DoSomethingSpecial();<br>
+> &ensp;&ensp;&ensp;&ensp;[[fallthrough]];<br>
+> &ensp;&ensp;default:<br>
+> &ensp;&ensp;&ensp;&ensp;DoSomethingGeneric();<br>
+> &ensp;&ensp;&ensp;&ensp;break;<br>
+> }
+> </code>
