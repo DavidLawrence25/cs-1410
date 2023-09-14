@@ -152,7 +152,7 @@
 				<li><a href="#braced-initializer-list-format">Braced Initializer List Format</a></li>
 				<li><a href="#looping-and-branching-statements">Looping and Branching Statements</a></li>
 				<li><a href="#pointer-and-reference-expressions">Pointer and Reference Expressions</a></li>
-				<li><a>Boolean Expressions</a></li>
+				<li><a href="#boolean-expressions">Boolean Expressions</a></li>
 				<li><a>Return Values</a></li>
 				<li><a>Variable and Array Initialization</a></li>
 				<li><a>Preprocessor Directives</a></li>
@@ -3460,3 +3460,20 @@ It is allowed (if unusual) to declare multiple variables in the same declaration
 > const std::string & str;&ensp;&ensp;// Bad - spaces on both sides of &
 > </code>
 
+### Boolean Expressions
+
+When you have a boolean expression that is longer than the standard line length, be consistent in how you break up the lines.
+
+In this example, the logical AND operator is always at the end of the lines:
+
+> <code>
+> if (this_one_thing > this_other_thing &&<br>
+> &ensp;&ensp;&ensp;&ensp;a_third_thing == a_fourth_thing &&<br>
+> &ensp;&ensp;&ensp;&ensp;yet_another && last_one) {<br>
+> &ensp;&ensp;...<br>
+> }
+> </code>
+
+<br>
+
+Note that when the code wraps in this example, both of the `&&` logical AND operators are at the end of the line. This is more common in Google code, though wrapping all operators at the beginning of the line is also allowed. Feel free to insert extra parentheses judiciously because they can be very helpful in increasing readability when used appropriately, but be careful about overuse. Also note that you should always use the punctuation operators, such as `&&` and `~`, rather than the word operators, such as `and` and `compl`.
