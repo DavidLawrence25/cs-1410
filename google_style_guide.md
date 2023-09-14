@@ -154,7 +154,7 @@
 				<li><a href="#pointer-and-reference-expressions">Pointer and Reference Expressions</a></li>
 				<li><a href="#boolean-expressions">Boolean Expressions</a></li>
 				<li><a href="#return-values">Return Values</a></li>
-				<li><a>Variable and Array Initialization</a></li>
+				<li><a href="#variable-and-array-initialization">Variable and Array Initialization</a></li>
 				<li><a>Preprocessor Directives</a></li>
 				<li><a>Class Format</a></li>
 				<li><a>Constructor Initializer Lists</a></li>
@@ -3496,4 +3496,33 @@ Use parentheses in `return expr;` only where you would use them in `x = expr;`.
 > <code>
 > return (value);&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// You wouldn't write var = (value);
 > return(result);&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// return is not a function!
+> </code>
+
+### Variable and Array Initialization
+
+You may choose between `=`, `()`, and `{}`; the following are all correct:
+
+> <code>
+> int x = 3;<br>
+> int x(3);<br>
+> int x{3};<br>
+> std::string name = "Some Name";<br>
+> std::string name("Some Name");<br>
+> std::string name{"Some Name"};
+> </code>
+
+<br>
+
+Be careful when using a braced initialization list `{...}` on a type with an `std::initializer_list` constructor. A nonempty braced-init-list prefers the `std::initializer_list` constructor whenever possible. Note that empty braces `{}` are special, and will call a default constructor if available. To force the non-`std::initializer_list` constructor, use parentheses instead of braces.
+
+> <code>
+> std::vector&lt;int&gt; v(100, 1);&ensp;&ensp;// A vector containing 100 items: All 1s.<br>
+> std::vector&lt;int&gt; v{100, 1};&ensp;&ensp;// A vector containing 2 items: 100 and 1.
+> </code>
+
+Also, the brace form prevents narrowing of integral types. This can prevent some types of programming errors.
+
+> <code>
+> int pi(3.14);&ensp;&ensp;// OK -- pi == 3.<br>
+> int pi{3.14};&ensp;&ensp;// Compile error: narrowing conversion.
 > </code>
