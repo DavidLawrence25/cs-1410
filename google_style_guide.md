@@ -87,12 +87,12 @@
 				<li><a href="#integer-types">Integer Types</a></li>
 				<li><a href="#64-bit-portability">64-Bit Portability</a></li>
 				<li><a href="#preprocessor-macros">Preprocessor Macros</a></li>
-				<li><a>0 and nullptr/NULL</a></li>
-				<li><a>sizeof</a></li>
-				<li><a>Type Deduction (including auto)</a></li>
-				<li><a>Class Template Argument Deduction</a></li>
-				<li><a>Designated Initializers</a></li>
-				<li><a>Lambda Expressions</a></li>
+				<li><a href="#0-and-nullptrnull">0 and nullptr/NULL</a></li>
+				<li><a href="#sizeof">sizeof</a></li>
+				<li><a href="#type-deduction-including-auto">Type Deduction (including auto)</a></li>
+				<li><a href="#class-template-argument-deduction">Class Template Argument Deduction</a></li>
+				<li><a href="#designated-initializers">Designated Initializers</a></li>
+				<li><a href="#lambda-expressions">Lambda Expressions</a></li>
 				<li><a>Template Metaprogramming</a></li>
 				<li><a>Boost</a></li>
 				<li><a>Other C++ Features</a></li>
@@ -2012,3 +2012,220 @@ If the object being bound is a struct, it may sometimes be helpful to provide na
 <br>
 
 As with function parameter comments, this can enable tools to detect if you get the order of the fields wrong.
+
+### Class Template Argument Deduction
+
+Use class template argument deduction only with templates that have explicitly opted into supporting it.
+
+**Definition:**
+
+Class template argument deduction (often abbreviated "CTAD") occurs when a variable is declared with a type that names a template, and the template argument list is not provided (not even empty angle brackets):
+
+> <code>
+> std::array a = {1, 2, 3};&ensp;&ensp;// `a` is a std::array&lt;int, 3&gt;
+> </code>
+
+<br>
+
+The compiler deduces the arguments from the initializer using the template's "deduction guides", which can be explicit or implicit.
+
+Explicit deduction guides look like function declarations with trailing return types, except that there's no leading `auto`, and the function name is the name of the template. For example, the above example relies on this deduction guide for `std::array`:
+
+> <code>
+> namespace std {<br>
+> template &lt;class T, class... U&gt;<br>
+> array(T, U...) -> std::array&lt;T, 1 + sizeof...(U)&gt;;<br>
+> }
+> </code>
+
+<br>
+
+Constructors in a primary template (as opposed to a template specialization) also implicitly define deduction guides.
+
+When you declare a variable that relies on CTAD, the compiler selects a deduction guide using the rules of constructor overload resolution, and that guide's return type becomes the type of the variable.
+
+**Pros:**
+
+CTAD can sometimes allow you to omit boilerplate from your code.
+
+**Cons:**
+
+The implicit deduction guides that are generated from constructors may have undesirable behavior, or be outright incorrect. This is particularly problematic for constructors written before CTAD was introduced in C++17, because the authors of those constructors had no way of knowing about (much less fixing) any problems that their constructors would cause for CTAD. Furthermore, adding explicit deduction guides to fix those problems might break any existing code that relies on the implicit deduction guides.
+
+CTAD also suffers from many of the same drawbacks as `auto`, because they are both mechanisms for deducing all or part of a variable's type from its initializer. CTAD does give the reader more information than `auto`, but it also doesn't give the reader an obvious cue that information has been omitted.
+
+**Decision:**
+
+Do not use CTAD with a given template unless the template's maintainers have opted into supporting use of CTAD by providing at least one explicit deduction guide (all templates in the `std` namespace are also presumed to have opted in). This should be enforced with a compiler warning if available.
+
+Uses of CTAD must also follow the general rules on Type deduction.
+
+### Designated Initializers
+
+Use designated initializers only in their C++20-compliant form.
+
+**Definition:**
+
+Designated initializers are a syntax that allows for initializing an aggregate ("plain old struct") by naming its fields explicitly:
+
+> <code>
+> struct Point {<br>
+> &ensp;&ensp;float x = 0.0;<br>
+> &ensp;&ensp;float y = 0.0;<br>
+> &ensp;&ensp;float z = 0.0;<br>
+> };<br>
+> <br>
+> Point p = {<br>
+> &ensp;&ensp;.x = 1.0,<br>
+> &ensp;&ensp;.y = 2.0,<br>
+> &ensp;&ensp;// z will be 0.0<br>
+> };
+> </code>
+
+<br>
+
+The explicitly listed fields will be initialized as specified, and others will be initialized in the same way they would be in a traditional aggregate initialization expression like `Point{1.0, 2.0}`.
+
+**Pros:**
+
+Designated initializers can make for convenient and highly readable aggregate expressions, especially for structs with less straightforward ordering of fields than the `Point` example above.
+
+**Cons:**
+
+While designated initializers have long been part of the C standard and supported by C++ compilers as an extension, only recently have they made it into the C++ standard, being added as part of C++20.
+
+The rules in the C++ standard are stricter than in C and compiler extensions, requiring that the designated initializers appear in the same order as the fields appear in the struct definition. So in the example above, it is legal according to C++20 to initialize `x` and then `z`, but not `y` and then `x`.
+
+**Decision:**
+
+Use designated initializers only in the form that is compatible with the C++20 standard: with initializers in the same order as the corresponding fields appear in the struct definition.
+
+### Lambda Expressions
+
+Use lambda expressions where appropriate. Prefer explicit captures when the lambda will escape the current scope.
+
+**Definition:**
+
+Lambda expressions are a concise way of creating anonymous function objects. They're often useful when passing functions as arguments. For example:
+
+> <code>
+> std::sort(v.begin(), v.end(), [](int x, int y) {<br>
+> &ensp;&ensp;return Weight(x) < Weight(y);<br>
+> });
+> </code>
+
+<br>
+
+They further allow capturing variables from the enclosing scope either explicitly by name, or implicitly using a default capture. Explicit captures require each variable to be listed, as either a value or reference capture:
+
+> <code>
+> int weight = 3;<br>
+> int sum = 0;<br>
+> // Captures `weight` by value and `sum` by reference.<br>
+> std::for_each(v.begin(), v.end(), [weight, &sum](int x) {<br>
+> &ensp;&ensp;sum += weight * x;<br>
+> });<br>
+> </code>
+
+<br>
+
+Default captures implicitly capture any variable referenced in the lambda body, including `this` if any members are used:
+
+> <code>
+> const std::vector&lt;int&gt; lookup_table = ...;<br>
+> std::vector&lt;int&gt; indices = ...;<br>
+> // Captures `lookup_table` by reference, sorts `indices` by the value<br>
+> // of the associated element in `lookup_table`.<br>
+> std::sort(indices.begin(), indices.end(), [&](int a, int b) {<br>
+> &ensp;&ensp;return lookup_table[a] < lookup_table[b];<br>
+> });
+> </code>
+
+<br>
+
+A variable capture can also have an explicit initializer, which can be used for capturing move-only variables by value, or for other situations not handled by ordinary reference or value captures:
+
+> <code>
+> std::unique_ptr&lt;Foo&gt; foo = ...;<br>
+> [foo = std::move(foo)] () {<br>
+> &ensp;&ensp;...<br>
+> }
+> </code>
+
+<br>
+
+Such captures (often called "init captures" or "generalized lambda captures") need not actually "capture" anything from the enclosing scope, or even have a name from the enclosing scope; this syntax is a fully general way to define members of a lambda object:
+
+> <code>
+> [foo = std::vector&lt;int&gt;({1, 2, 3})] () {<br>
+> &ensp;&ensp;...<br>
+> }
+> </code>
+
+<br>
+
+The type of a capture with an initializer is deduced using the same rules as `auto`.
+
+**Pros:**
+
+- Lambdas are much more concise than other ways of defining function objects to be passed to STL algorithms, which can be a readability improvement.
+
+- Appropriate use of default captures can remove redundancy and highlight important exceptions from the default.
+
+- Lambdas, `std::function`, and `std::bind` can be used in combination as a general purpose callback mechanism; they make it easy to write functions that take bound functions as arguments.
+
+**Cons:**
+
+- Variable capture in lambdas can be a source of dangling-pointer bugs, particularly if a lambda escapes the current scope.
+
+- Default captures by value can be misleading because they do not prevent dangling-pointer bugs. Capturing a pointer by value doesn't cause a deep copy, so it often has the same lifetime issues as capture by reference. This is especially confusing when capturing this by value, since the use of this is often implicit.
+
+- Captures actually declare new variables (whether or not the captures have initializers), but they look nothing like any other variable declaration syntax in C++. In particular, there's no place for the variable's type, or even an `auto` placeholder (although init captures can indicate it indirectly, e.g., with a cast). This can make it difficult to even recognize them as declarations.
+
+- Init captures inherently rely on type deduction, and suffer from many of the same drawbacks as `auto`, with the additional problem that the syntax doesn't even cue the reader that deduction is taking place.
+
+- It's possible for use of lambdas to get out of hand; very long nested anonymous functions can make code harder to understand.
+
+**Decision:**
+
+- Use lambda expressions where appropriate, with formatting as described below.
+
+- Prefer explicit captures if the lambda may escape the current scope. For example, instead of:
+
+	> <code>
+	> {<br>
+	> &ensp;&ensp;Foo foo;<br>
+	> &ensp;&ensp;...<br>
+	> &ensp;&ensp;executor->Schedule([&] { Frobnicate(foo); })<br>
+	> &ensp;&ensp;...<br>
+	> }<br>
+	> // BAD! The fact that the lambda makes use of a reference to `foo` and<br>
+	> // possibly `this` (if `Frobnicate` is a member function) may not be<br>
+	> // apparent on a cursory inspection. If the lambda is invoked after<br>
+	> // the function returns, that would be bad, because both `foo`<br>
+	> // and the enclosing object could have been destroyed.
+	> </code>
+
+	<br>
+
+	prefer to write:
+
+	> <code>
+	> {<br>
+	> &ensp;&ensp;Foo foo;<br>
+	> &ensp;&ensp;...<br>
+	> &ensp;&ensp;executor->Schedule([&foo] { Frobnicate(foo); })<br>
+	> &ensp;&ensp;...<br>
+	> }<br>
+	> // BETTER - The compile will fail if `Frobnicate` is a member<br>
+	> // function, and it's clearer that `foo` is dangerously captured by<br>
+	> // reference.
+	> </code>
+
+- Use default capture by reference (`[&]`) only when the lifetime of the lambda is obviously shorter than any potential captures.
+
+- Use default capture by value (`[=]`) only as a means of binding a few variables for a short lambda, where the set of captured variables is obvious at a glance, and which does not result in capturing this implicitly. (That means that a lambda that appears in a non-static class member function and refers to non-static class members in its body must capture this explicitly or via `[&]`.) Prefer not to write long or complex lambdas with default capture by value.
+
+- Use captures only to actually capture variables from the enclosing scope. Do not use captures with initializers to introduce new names, or to substantially change the meaning of an existing name. Instead, declare a new variable in the conventional way and then capture it, or avoid the lambda shorthand and define a function object explicitly.
+
+- See the section on type deduction for guidance on specifying the parameter and return types.
