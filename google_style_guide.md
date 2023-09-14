@@ -95,7 +95,7 @@
 				<li><a href="#lambda-expressions">Lambda Expressions</a></li>
 				<li><a href="#template-metaprogramming">Template Metaprogramming</a></li>
 				<li><a href="#boost">Boost</a></li>
-				<li><a href="#some-other-c-features">Other C++ Features</a></li>
+				<li><a href="#other-c-features 1">Other C++ Features</a></li>
 				<li><a href="#nonstandard-extensions">Nonstandard Extensions</a></li>
 				<li><a href="#aliases">Aliases</a></li>
 				<li><a href="#switch-statements">Switch Statements</a></li>
@@ -139,18 +139,18 @@
 		</td>
 	</tr>
 	<tr>
-		<td><a>Formatting</a></td>
+		<td><a href="#formatting">Formatting</a></td>
 		<td>
 			<ul>
-				<li><a>Line Length</a></li>
-				<li><a>Non-ASCII Characters</a></li>
-				<li><a>Spaces vs. Tabs</a></li>
-				<li><a>Function Declarations and Definitions</a></li>
-				<li><a>Lambda Expressions</a></li>
-				<li><a>Floating-Point Literals</a></li>
-				<li><a>Function Calls</a></li>
-				<li><a>Braced Initializer List Format</a></li>
-				<li><a>Looping and Branching Statements</a></li>
+				<li><a href="#line-length">Line Length</a></li>
+				<li><a href="#non-ascii-characters">Non-ASCII Characters</a></li>
+				<li><a href="#spaces-vs-tabs">Spaces vs. Tabs</a></li>
+				<li><a href="#function-declarations-and-definitions">Function Declarations and Definitions</a></li>
+				<li><a href="#lambda-expressions 1">Lambda Expressions</a></li>
+				<li><a href="#floating-point-literals">Floating-Point Literals</a></li>
+				<li><a href="#function-calls">Function Calls</a></li>
+				<li><a href="#braced-initializer-list-format">Braced Initializer List Format</a></li>
+				<li><a href="#looping-and-branching-statements">Looping and Branching Statements</a></li>
 				<li><a>Pointer and Reference Expressions</a></li>
 				<li><a>Boolean Expressions</a></li>
 				<li><a>Return Values</a></li>
@@ -2312,7 +2312,7 @@ In order to maintain a high level of readability for all contributors who might 
 
 We are actively considering adding other Boost features to the list, so this list may be expanded in the future.
 
-### Some Other C++ Features
+### Other C++ Features
 
 As with Boost, some modern C++ extensions encourage coding practices that hamper readability—for example by removing checked redundancy (such as type names) that may be helpful to readers, or by encouraging template metaprogramming. Other extensions duplicate functionality available through existing mechanisms, which may lead to confusion and conversion costs.
 
@@ -2963,3 +2963,442 @@ Use `TODO` comments for code that is temporary, a short-term solution, or good-e
 <br>
 
 If your `TODO` is of the form "At a future date do something" make sure that you either include a very specific date ("Fix by November 2005") or a very specific event ("Remove this code when all clients can handle XML responses.").
+
+## Formatting
+
+Coding style and formatting are pretty arbitrary, but a project is much easier to follow if everyone uses the same style. Individuals may not agree with every aspect of the formatting rules, and some of the rules may take some getting used to, but it is important that all project contributors follow the style rules so that they can all read and understand everyone's code easily.
+
+To help you format code correctly, we've created a settings file for emacs.
+
+### Line Length
+
+Each line of text in your code should be at most 80 characters long.
+
+We recognize that this rule is controversial, but so much existing code already adheres to it, and we feel that consistency is important.
+
+**Pros:**
+
+Those who favor this rule argue that it is rude to force them to resize their windows and there is no need for anything longer. Some folks are used to having several code windows side-by-side, and thus don't have room to widen their windows in any case. People set up their work environment assuming a particular maximum window width, and 80 columns has been the traditional standard. Why change it?
+
+**Cons:**
+
+Proponents of change argue that a wider line can make code more readable. The 80-column limit is an hidebound throwback to 1960s mainframes; modern equipment has wide screens that can easily show longer lines.
+
+**Decision:**
+
+80 characters is the maximum.
+
+A line may exceed 80 characters if it is
+
+- a comment line which is not feasible to split without harming readability, ease of cut and paste or auto-linking -- e.g., if a line contains an example command or a literal URL longer than 80 characters.
+
+- a string literal that cannot easily be wrapped at 80 columns. This may be because it contains URIs or other semantically-critical pieces, or because the literal contains an embedded language, or a multiline literal whose newlines are significant like help messages. In these cases, breaking up the literal would reduce readability, searchability, ability to click links, etc. Except for test code, such literals should appear at namespace scope near the top of a file. If a tool like Clang-Format doesn't recognize the unsplittable content, disable the tool around the content as necessary.
+
+	(We must balance between usability/searchability of such literals and the readability of the code around them.)
+
+- an include statement.
+- a header guard
+- a using-declaration
+
+### Non-ASCII Characters
+
+Non-ASCII characters should be rare, and must use UTF-8 formatting.
+
+You shouldn't hard-code user-facing text in source, even English, so use of non-ASCII characters should be rare. However, in certain cases it is appropriate to include such words in your code. For example, if your code parses data files from foreign sources, it may be appropriate to hard-code the non-ASCII string(s) used in those data files as delimiters. More commonly, unittest code (which does not need to be localized) might contain non-ASCII strings. In such cases, you should use UTF-8, since that is an encoding understood by most tools able to handle more than just ASCII.
+
+Hex encoding is also OK, and encouraged where it enhances readability — for example, `"\xEF\xBB\xBF"`, or, even more simply, `"\uFEFF"`, is the Unicode zero-width no-break space character, which would be invisible if included in the source as straight UTF-8.
+
+When possible, avoid the `u8` prefix. It has significantly different semantics starting in C++20 than in C++17, producing arrays of `char8_t` rather than `char`.
+
+You shouldn't use `char16_t` and `char32_t` character types, since they're for non-UTF-8 text. For similar reasons you also shouldn't use `wchar_t` (unless you're writing code that interacts with the Windows API, which uses `wchar_t` extensively).
+
+### Spaces vs. Tabs
+
+Use only spaces, and indent 2 spaces at a time.
+
+We use spaces for indentation. Do not use tabs in your code. You should set your editor to emit spaces when you hit the tab key.
+
+### Function Declarations and Definitions
+
+Return type on the same line as function name, parameters on the same line if they fit. Wrap parameter lists which do not fit on a single line as you would wrap arguments in a function call.
+
+Functions look like this:
+
+> <code>
+> ReturnType ClassName::FunctionName(Type par_name1, Type par_name2) {<br>
+> &ensp;&ensp;DoSomething();<br>
+> &ensp;&ensp;...<br>
+> }
+> </code>
+
+<br>
+
+If you have too much text to fit on one line:
+
+> <code>
+> ReturnType ClassName::ReallyLongFunctionName(Type par_name1, Type par_name2,<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Type par_name3) {<br>
+> &ensp;&ensp;DoSomething();<br>
+> &ensp;&ensp;...<br>
+> }
+> </code>
+
+<br>
+
+or if you cannot fit even the first parameter:
+
+> <code>
+> ReturnType LongClassName::ReallyReallyReallyLongFunctionName(<br>
+> &ensp;&ensp;&ensp;&ensp;Type par_name1,&ensp;&ensp;// 4 space indent<br>
+> &ensp;&ensp;&ensp;&ensp;Type par_name2,<br>
+> &ensp;&ensp;&ensp;&ensp;Type par_name3) {<br>
+> &ensp;&ensp;DoSomething();&ensp;&ensp;// 2 space indent<br>
+> &ensp;&ensp;...<br>
+> }
+> </code>
+
+<br>
+
+Some points to note:
+
+- Choose good parameter names.
+- A parameter name may be omitted only if the parameter is not used in the function's definition.
+- If you cannot fit the return type and the function name on a single line, break between them.
+- If you break after the return type of a function declaration or definition, do not indent.
+- The open parenthesis is always on the same line as the function name.
+- There is never a space between the function name and the open parenthesis.
+- There is never a space between the parentheses and the parameters.
+- The open curly brace is always on the end of the last line of the function declaration, not the start of the next line.
+- The close curly brace is either on the last line by itself or on the same line as the open curly brace.
+- There should be a space between the close parenthesis and the open curly brace.
+- All parameters should be aligned if possible.
+- Default indentation is 2 spaces.
+- Wrapped parameters have a 4 space indent.
+
+Unused parameters that are obvious from context may be omitted:
+
+> <code>
+> class Foo {<br>
+> &ensp;public:<br>
+> &ensp;&ensp;Foo(const Foo&) = delete;<br>
+> &ensp;&ensp;Foo& operator=(const Foo&) = delete;<br>
+> };
+> </code>
+
+<br>
+
+Unused parameters that might not be obvious should comment out the variable name in the function definition:
+
+> <code>
+> class Shape {<br>
+> &ensp;public:<br>
+> &ensp;&ensp;virtual void Rotate(double radians) = 0;<br>
+> };<br>
+> <br>
+> class Circle : public Shape {<br>
+> &ensp;public:<br>
+> &ensp;&ensp;void Rotate(double radians) override;<br>
+> };<br>
+> <br>
+> void Circle::Rotate(double /*radians*/) {}
+> </code>
+
+<br>
+
+> <code>
+> // Bad - if someone wants to implement later, it's not clear what the<br>
+> // variable means.<br>
+> void Circle::Rotate(double) {}
+> </code>
+
+<br>
+
+Attributes, and macros that expand to attributes, appear at the very beginning of the function declaration or definition, before the return type:
+
+> <code>
+> ABSL_ATTRIBUTE_NOINLINE void ExpensiveFunction();<br>
+> [[nodiscard]] bool IsOk();
+> </code>
+
+### Lambda Expressions
+
+Format parameters and bodies as for any other function, and capture lists like other comma-separated lists.
+
+For by-reference captures, do not leave a space between the ampersand (`&`) and the variable name.
+
+> <code>
+> int x = 0;<br>
+> auto x_plus_n = [&x](int n) -> int { return x + n; }
+> </code>
+
+<br>
+
+Short lambdas may be written inline as function arguments.
+
+> <code>
+> absl::flat_hash_set&lt;int&gt; to_remove = {7, 8, 9};<br>
+> std::vector&lt;int&gt; digits = {3, 9, 1, 8, 4, 7, 1};<br>
+> digits.erase(std::remove_if(digits.begin(), digits.end(), [&to_remove](int i) {<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;return to_remove.contains(i);<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;}),<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;digits.end());
+> </code>
+
+### Floating-Point Literals
+
+Floating-point literals should always have a radix point, with digits on both sides, even if they use exponential notation. Readability is improved if all floating-point literals take this familiar form, as this helps ensure that they are not mistaken for integer literals, and that the `E/e` of the exponential notation is not mistaken for a hexadecimal digit. It is fine to initialize a floating-point variable with an integer literal (assuming the variable type can exactly represent that integer), but note that a number in exponential notation is never an integer literal.
+
+> <code>
+> float f = 1.f;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad - missing a zero after the radix point.<br>
+> long double ld = -.5L;&ensp;&ensp;// Bad - missing a zero before the radix point.<br>
+> double d = 1248e6;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;// Bad - missing a radix point and a zero.
+> </code>
+
+<br>
+
+> <code>
+> float f = 1.0f;<br>
+> float f2 = 1;&ensp;&ensp;&ensp;// Also OK<br>
+> long double ld = -0.5L;<br>
+> double d = 1248.0e6;
+> </code>
+
+### Function Calls
+
+Either write the call all on a single line, wrap the arguments at the parenthesis, or start the arguments on a new line indented by four spaces and continue at that 4 space indent. In the absence of other considerations, use the minimum number of lines, including placing multiple arguments on each line where appropriate.
+
+Function calls have the following format:
+
+> <code>
+> bool result = DoSomething(argument1, argument2, argument3);
+> </code>
+
+<br>
+
+If the arguments do not all fit on one line, they should be broken up onto multiple lines, with each subsequent line aligned with the first argument. Do not add spaces after the open paren or before the close paren:
+
+> <code>
+> bool result = DoSomething(averyveryveryverylongargument1,<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;argument2, argument3);
+> </code>
+
+<br>
+
+Arguments may optionally all be placed on subsequent lines with a four space indent:
+
+> <code>
+> if (...) {<br>
+> &ensp;&ensp;...<br>
+> &ensp;&ensp;...<br>
+> &ensp;&ensp;if (...) {<br>
+> &ensp;&ensp;&ensp;&ensp;bool result = DoSomething(<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;argument1, argument2,&ensp;&ensp;// 4 space indent<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;argument3, argument4);<br>
+> &ensp;&ensp;&ensp;&ensp;...<br>
+> &ensp;&ensp;}
+> </code>
+
+Put multiple arguments on a single line to reduce the number of lines necessary for calling a function unless there is a specific readability problem. Some find that formatting with strictly one argument on each line is more readable and simplifies editing of the arguments. However, we prioritize for the reader over the ease of editing arguments, and most readability problems are better addressed with the following techniques.
+
+If having multiple arguments in a single line decreases readability due to the complexity or confusing nature of the expressions that make up some arguments, try creating variables that capture those arguments in a descriptive name:
+
+> <code>
+> int my_heuristic = scores[x] * y + bases[x];<br>
+> bool result = DoSomething(my_heuristic, x, y, z);
+> </code>
+
+<br>
+
+Or put the confusing argument on its own line with an explanatory comment:
+
+> <code>
+> bool result = DoSomething(scores[x] * y + bases[x],&ensp;&ensp;// Score heuristic.<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;x, y, z);
+> </code>
+
+<br>
+
+If there is still a case where one argument is significantly more readable on its own line, then put it on its own line. The decision should be specific to the argument which is made more readable rather than a general policy.
+
+Sometimes arguments form a structure that is important for readability. In those cases, feel free to format the arguments according to that structure:
+
+> <code>
+> // Transform the widget by a 3x3 matrix.<br>
+> my_widget.Transform(x1, x2, x3,<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;y1, y2, y3,<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;z1, z2, z3);
+> </code>
+
+### Braced Initializer List Format
+
+Format a braced initializer list exactly like you would format a function call in its place.
+
+If the braced list follows a name (e.g., a type or variable name), format as if the `{}` were the parentheses of a function call with that name. If there is no name, assume a zero-length name.
+
+> <code>
+> // Examples of braced init list on a single line.<br>
+> return {foo, bar};<br>
+> functioncall({foo, bar});<br>
+> std::pair&lt;int, int&gt; p{foo, bar};<br>
+> <br>
+> // When you have to wrap.<br>
+> SomeFunction(<br>
+> &ensp;&ensp;&ensp;&ensp;{"assume a zero-length name before {"},<br>
+> &ensp;&ensp;&ensp;&ensp;some_other_function_parameter);<br>
+> SomeType variable{<br>
+> &ensp;&ensp;&ensp;&ensp;some, other, values,<br>
+> &ensp;&ensp;&ensp;&ensp;{"assume a zero-length name before {"},<br>
+> &ensp;&ensp;&ensp;&ensp;SomeOtherType{<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;"Very long string requiring the surrounding breaks.",<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;some, other, values},<br>
+> &ensp;&ensp;&ensp;&ensp;SomeOtherType{"Slightly shorter string",<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;some, other, values}};<br>
+> SomeType variable{<br>
+> &ensp;&ensp;&ensp;&ensp;"This is too long to fit all in one line"};<br>
+> MyType m = {&ensp;&ensp;// Here, you could also break before {.<br>
+> &ensp;&ensp;&ensp;&ensp;superlongvariablename1,<br>
+> &ensp;&ensp;&ensp;&ensp;superlongvariablename2,<br>
+> &ensp;&ensp;&ensp;&ensp;{short, interior, list},<br>
+> &ensp;&ensp;&ensp;&ensp;{interiorwrappinglist,<br>
+> &ensp;&ensp;&ensp;&ensp;&ensp;interiorwrappinglist2}};
+> </code>
+
+### Looping and Branching Statements
+
+At a high level, looping or branching statements consist of the following components:
+
+- One or more statement keywords (e.g. `if`, `else`, `switch`, `while`, `do`, or `for`).
+- One condition or iteration specifier, inside parentheses.
+- One or more controlled statements, or blocks of controlled statements.
+
+For these statements:
+
+- The components of the statement should be separated by single spaces (not line breaks).
+
+- Inside the condition or iteration specifier, put one space (or a line break) between each semicolon and the next token, except if the token is a closing parenthesis or another semicolon.
+
+- Inside the condition or iteration specifier, do not put a space after the opening parenthesis or before the closing parenthesis.
+
+- Put any controlled statements inside blocks (i.e. use curly braces).
+
+- Inside the controlled blocks, put one line break immediately after the opening brace, and one line break immediately before the closing brace.
+
+> <code>
+> if (condition) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Good - no spaces inside parentheses, space before brace.<br>
+> &nbsp;&nbsp;DoOneThing();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Good - two-space indent.<br>
+> &nbsp;&nbsp;DoAnotherThing();<br>
+> } else if (int a = f(); a != 3) {&nbsp;&nbsp;// Good - closing brace on new line, else on same line.<br>
+> &nbsp;&nbsp;DoAThirdThing(a);<br>
+> } else {<br>
+> &nbsp;&nbsp;DoNothing();<br>
+> }<br>
+> <br>
+> // Good - the same rules apply to loops.<br>
+> while (condition) {<br>
+> &nbsp;&nbsp;RepeatAThing();<br>
+> }<br>
+> <br>
+> // Good - the same rules apply to loops.<br>
+> do {<br>
+> &nbsp;&nbsp;RepeatAThing();<br>
+> } while (condition);<br>
+> <br>
+> // Good - the same rules apply to loops.<br>
+> for (int i = 0; i < 10; ++i) {<br>
+> &nbsp;&nbsp;RepeatAThing();<br>
+> }
+> </code>
+
+<br>
+
+> <code>
+> if(condition) {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space missing after `if`.<br>
+> else if ( condition ) {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space between the parentheses and the condition.<br>
+> else if (condition){}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space missing before `{`.<br>
+> else if(condition){}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - multiple spaces missing.<br>
+> <br>
+> for (int a = f();a == 10) {}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Bad - space missing after the semicolon.<br>
+> <br>
+> // Bad - `if ... else` statement does not have braces everywhere.<br>
+> if (condition)<br>
+> &nbsp;&nbsp;foo;<br>
+> else {<br>
+> &nbsp;&nbsp;bar;<br>
+> }<br>
+> <br>
+> // Bad - `if` statement too long to omit braces.<br>
+> if (condition)<Br>
+> &nbsp;&nbsp;// Comment<br>
+> &nbsp;&nbsp;DoSomething();<br>
+> <br>
+> // Bad - `if` statement too long to omit braces.<br>
+> if (condition1 &&<br>
+> &nbsp;&nbsp;&nbsp;&nbsp;condition2)<br>
+> &nbsp;&nbsp;DoSomething();
+> </code>
+
+<br>
+
+For historical reasons, we allow one exception to the above rules: the curly braces for the controlled statement or the line breaks inside the curly braces may be omitted if as a result the entire statement appears on either a single line (in which case there is a space between the closing parenthesis and the controlled statement) or on two lines (in which case there is a line break after the closing parenthesis and there are no braces).
+
+> <code>
+> // OK - fits on one line.<br>
+> if (x == kFoo) { return new Foo(); }<br>
+> <br>
+> // OK - braces are optional in this case.<br>
+> if (x == kFoo) return new Foo();<br>
+> <br>
+> // OK - condition fits on one line, body fits on another.<br>
+> if (x == kBar)<br>
+> &nbsp;&nbsp;Bar(arg1, arg2, arg3);<br>
+> </code>
+
+<br>
+
+This exception does not apply to multi-keyword statements like `if ... else` or `do ... while`.
+
+> <code>
+> // Bad - `if ... else` statement is missing braces.<br>
+> if (x) DoThis();<br>
+> else DoThat();<br>
+> <br>
+> // Bad - `do ... while` statement is missing braces.<br>
+> do DoThis();<br>
+> while (x);
+> </code>
+
+<br>
+
+Use this style only when the statement is brief, and consider that loops and branching statements with complex conditions or controlled statements may be more readable with curly braces. Some projects require curly braces always.
+
+`case` blocks in `switch` statements can have curly braces or not, depending on your preference. If you do include curly braces, they should be placed as shown below.
+
+> <code>
+> switch (var) {<br>
+> &nbsp;&nbsp;case 0: {&nbsp;&nbsp;// 2 space indent<br>
+> &nbsp;&nbsp;&nbsp;&nbsp;Foo();&nbsp;&nbsp;&nbsp;// 4 space indent<br>
+> &nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+> &nbsp;&nbsp;}<br>
+> &nbsp;&nbsp;default: {<br>
+> &nbsp;&nbsp;&nbsp;&nbsp;Bar();<br>
+> &nbsp;&nbsp;}<br>
+> }
+> </code>
+
+<br>
+
+Empty loop bodies should use either an empty pair of braces or continue with no braces, rather than a single semicolon.
+
+> <code>
+> while (condition) {}&nbsp;&nbsp;// Good - `{}` indicates no logic.<br>
+> while (condition) {<br>
+> &nbsp;&nbsp;// Comments are okay, too<br>
+> }<br>
+> while (condition) continue;&nbsp;&nbsp;// Good - `continue` indicates no logic.
+> </code>
+
+<br>
+
+> <code>
+> while (condition);&nbsp;&nbsp;// Bad - looks like part of `do-while` loop.
+> </code>
