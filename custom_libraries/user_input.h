@@ -3,10 +3,12 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "number_utils.h"
+#include "custom_libraries/number_utils.h"
 
 #ifndef CS1410_CUSTOMLIBRARIES_USERINPUT_H_
 #define CS1410_CUSTOMLIBRARIES_USERINPUT_H_
+
+namespace rose {
 
 // A set of various string representations of the number 0. Used several times
 // throughout the file, especially in functions that need to check whether or
@@ -25,8 +27,8 @@ const std::unordered_set<std::string> kZeros =
 
 // Returns a number based on the option the end user picked. Loops until the
 // user's input is one from the options provided.
-int menu_prompt(std::string prompt, std::string option_not_found_message,
-                std::unordered_map<std::string, int> options) {
+int MenuPrompt(std::string prompt, std::string option_not_found_message,
+               std::unordered_map<std::string, int> options) {
   while (true) {
     std::string option;
 
@@ -41,14 +43,14 @@ int menu_prompt(std::string prompt, std::string option_not_found_message,
 
 // Gets an integer from the user and returns it. Loops until the user's input is
 // a proper integer.
-int get_integer(std::string prompt, std::string conversion_failed_message) {
+int GetInteger(std::string prompt, std::string conversion_failed_message) {
   while (true) {
     std::string input;
 
     std::cout << prompt;
     std::cin >> input;
 
-    int x = StringToInt(input);
+    int x = rose::StringToInt(input);
     if (x != 0 || kZeros.find(input) != kZeros.end()) return x;
     std::cout << conversion_failed_message;
   }
@@ -57,16 +59,16 @@ int get_integer(std::string prompt, std::string conversion_failed_message) {
 // Gets an integer from the user and returns it. Loops until the user's input is
 // a proper integer that satisfies the validator function.
 template <typename... ExtraArgs>
-int get_integer(std::string prompt, bool (*validator)(int, ExtraArgs...),
-                std::string conversion_failed_message,
-                std::string validator_failed_message, ExtraArgs... extra_args) {
+int GetInteger(std::string prompt, bool (*validator)(int, ExtraArgs...),
+               std::string conversion_failed_message,
+               std::string validator_failed_message, ExtraArgs... extra_args) {
   while (true) {
     std::string input;
 
     std::cout << prompt;
     std::cin >> input;
 
-    int x = StringToInt(input);
+    int x = rose::StringToInt(input);
     if (x == 0 && kZeros.find(input) == kZeros.end()) {
       std::cout << conversion_failed_message;
       continue;
@@ -79,14 +81,14 @@ int get_integer(std::string prompt, bool (*validator)(int, ExtraArgs...),
 
 // Gets a double from the user and returns it. Loops until the user's input is
 // a proper double.
-double get_double(std::string prompt, std::string conversion_failed_message) {
+double GetDouble(std::string prompt, std::string conversion_failed_message) {
   while (true) {
     std::string input;
 
     std::cout << prompt;
     std::cin >> input;
 
-    double x = StringToDouble(input);
+    double x = rose::StringToDouble(input);
     if (x != 0.0 || kZeros.find(input) != kZeros.end()) return x;
     std::cout << conversion_failed_message;
   }
@@ -95,17 +97,17 @@ double get_double(std::string prompt, std::string conversion_failed_message) {
 // Gets a double from the user and returns it. Loops until the user's input is
 // a proper double that satisfies the validator function.
 template <typename... ExtraArgs>
-double get_double(std::string prompt, bool (*validator)(double, ExtraArgs...),
-                  std::string conversion_failed_message,
-                  std::string validator_failed_message,
-                  ExtraArgs... extra_args) {
+double GetDouble(std::string prompt, bool (*validator)(double, ExtraArgs...),
+                 std::string conversion_failed_message,
+                 std::string validator_failed_message,
+                 ExtraArgs... extra_args) {
   while (true) {
     std::string input;
 
     std::cout << prompt;
     std::cin >> input;
 
-    double x = StringToDouble(input);
+    double x = rose::StringToDouble(input);
     if (x == 0.0 && kZeros.find(input) == kZeros.end()) {
       std::cout << conversion_failed_message;
       continue;
@@ -116,4 +118,6 @@ double get_double(std::string prompt, bool (*validator)(double, ExtraArgs...),
   }
 }
 
-#endif // CS1410_CUSTOMLIBRARIES_USERINPUT_H_
+}  // namespace rose
+
+#endif  // CS1410_CUSTOMLIBRARIES_USERINPUT_H_

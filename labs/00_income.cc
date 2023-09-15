@@ -2,37 +2,27 @@
 #include <iomanip>
 #include <string>
 
-double get_income(const int year); // user_input.hpp (modified)
+#include "custom_libraries/user_input.h"
 
 int main() {
-	const int YEARS = 5;
-	const int START_YEAR = 2016;
+  const int kYears = 5;
+  const int kStartYear = 2016;
 
-	double total_income = 0.0;
-	for (int i = 0; i < YEARS; i++) {
-		total_income += get_income(START_YEAR - i);
-	}
+  double total_income = 0.0;
+  for (int i = 0; i < kYears; ++i) {
+    // Initialization of `prompt` is split up because
+    // there would be too many append operations otherwise.
+    std::string prompt = "Enter income for : ";
+    prompt.insert(17, std::to_string(kStartYear - i));
 
-	double average_income = total_income / YEARS;
+    total_income += rose::GetDouble(
+        prompt, /*conversion_failed_message=*/"Input must be a number\n");
+  }
 
-	std::cout << "Income (averaged over the past " << YEARS << " years) is: $"
-	<< std::fixed << std::setprecision(2) << average_income;
+  const double kAverageIncome = total_income / kYears;
 
-	return 0;
-}
+  std::cout << "Income (averaged over the past " << kYears << " years) is: $"
+  << std::fixed << std::setprecision(2) << kAverageIncome;
 
-// modified from get_double in https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
-double get_income(const int year) {
-	while (true) {
-		std::string income;
-
-		std::cout << "Enter income for " << year << ": ";
-		std::cin >> income;
-
-		try {
-			return stod(income);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << "Input must be a number\n";
-		}
-	}
+  return 0;
 }

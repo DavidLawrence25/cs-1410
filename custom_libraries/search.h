@@ -3,6 +3,8 @@
 #ifndef CS1410_CUSTOMLIBRARIES_SEARCH_H_
 #define CS1410_CUSTOMLIBRARIES_SEARCH_H_
 
+namespace rose {
+
 // Returns the index of `value` in a sorted vector `numbers`, if present.
 // If the value is not present, returns -1.
 int BinarySearch(std::vector<int> numbers, int value) {
@@ -24,4 +26,6 @@ int BinarySearch(std::vector<int> numbers, int value) {
   return -1;
 }
 
-#endif // CS1410_CUSTOMLIBRARIES_SEARCH_H_
+}  // namespace rose
+
+#endif  // CS1410_CUSTOMLIBRARIES_SEARCH_H_

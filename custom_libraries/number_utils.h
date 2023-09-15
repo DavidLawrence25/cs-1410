@@ -6,6 +6,8 @@
 #ifndef CS1410_CUSTOMLIBRARIES_NUMBERUTILS_H_
 #define CS1410_CUSTOMLIBRARIES_NUMBERUTILS_H_
 
+namespace rose {
+
 // Calculates the square root of `x`, rounded down to the nearest integer.
 // If `x < 0`, returns `x`.
 int FloorSqrt(int x) {
@@ -129,4 +131,6 @@ double StringToDouble(std::string str) {
   return is_negative ? -x : x;
 }
 
-#endif // CS1410_CUSTOMLIBRARIES_NUMBERUTILS_H_
+}  // namespace rose
+
+#endif  // CS1410_CUSTOMLIBRARIES_NUMBERUTILS_H_
