@@ -1,93 +1,95 @@
-#include <iostream>
-#include <stdlib.h>
 #include <time.h>
+
+#include <iostream>
+#include <random>
 #include <string>
 
-enum TurnType {human, robot};
+#include "custom_libraries/user_input.h"
 
-template <typename... ExtraArgs>
-int get_integer(const std::string prompt, bool (*validator)(int, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args); // user_input.hpp
+enum TurnType {
+  kHuman,
+  kRobot
+};
+
+// Returns true if `n` stones can be taken from the pile.
 bool can_take_stones(int n, int pile_size);
+// Returns the number of stones left in the pile after the human took them.
+// Note that this function does not remove any stones on its own.
 int take_stones_human(int pile_size);
-int take_stones_robot(int pile_size);
+// Returns the number of stones left in the pile after the robot took them.
+// Note that this function does not remove any stones on its own.
+int take_stones_robot(int pile_size, std::mt19937 &rng);
 
 int main() {
-	srand(time(NULL)); // initialize the pseudo-random number generator
+  std::random_device rd;
+  std::mt19937 rng(rd());
+  std::uniform_int_distribution<int> starting_pile_distribution(10, 30);
 
-	const int MIN_STARTING_PILE_SIZE = 10; // inclusive
-	const int MAX_STARTING_PILE_SIZE = 100; // exclusive
-	int pile_size = rand() % (MAX_STARTING_PILE_SIZE - MIN_STARTING_PILE_SIZE) + MIN_STARTING_PILE_SIZE;
-	TurnType turn = TurnType::human;
+  int pile_size = starting_pile_distribution(rng);
+  TurnType turn = TurnType::kHuman;
 
-	while (pile_size > 0) {
-		if (turn == TurnType::human) {
-			std::cout << "Stones in The Pile: " << pile_size << '\n';
-			pile_size = take_stones_human(pile_size);
-			turn = TurnType::robot;
-		} else if (turn == TurnType::robot) {
-			pile_size = take_stones_robot(pile_size);
-			turn = TurnType::human;
-		} else {
-			std::cout << "What the frick did you do?\n";
-		}
-	}
+  while (pile_size > 0) {
+    switch (turn) {
+      case kHuman:
+        std::cout << "Stones in The Pile: " << pile_size << '\n';
+        pile_size = take_stones_human(pile_size);
+        turn = TurnType::kRobot;
+        break;
+      case kRobot:
+        pile_size = take_stones_robot(pile_size, rng);
+        turn = TurnType::kHuman;
+        break;
+      default:
+        std::cout << "What the frick did you do?\n";
+    }
+  }
 
-	if (turn == robot) { // the robot won
-		std::cout << "\nYou lose.\n";
-	} else if (turn == human) { // the human won
-		std::cout << "You win!\n";
-	} else {
-		std::cout << "What the frick did you do?\n";
-	}
+  switch (turn) {
+    case kHuman:
+      std::cout << "You win!\n";
+      break;
+    case kRobot:
+      std::cout << "\nYou lose.\n";
+      break;
+    default:
+      std::cout << "What the frick did you do?\n";
+  }
 
-	return 0;
+  return 0;
 }
 
-// borrowed from https://github.com/DavidLawrence25/cs-1410/blob/main/custom_libraries/user_input.hpp
-template <typename... ExtraArgs>
-int get_integer(const std::string prompt, bool (*validator)(int, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args) {
-	while (true) {
-		std::string input;
-
-		std::cout << prompt;
-		std::cin >> input;
-
-		int x;
-		try {
-			x = stoi(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << conversion_failed_message;
-			continue;
-		}
-		if (validator(x, extra_args...)) {
-			return x;
-		}
-
-		std::cout << validator_failed_message;
-	}
-}
-
+// Returns true when `n` is inside the range appropriate for `pile_size`:
+// `3 < pile_size ------> 0 < n <= 3`
+// `1 < pile_size <= 3 -> 0 < n < pile_size`
+// `pile_size == 1 -----> n == 1`
 bool can_take_stones(int n, int pile_size) {
-	int max_stones_to_take = pile_size > 3 ? 4 : pile_size;
-	return n > 0 && (n < max_stones_to_take || (n == pile_size == 1));
+  int max_stones_to_take = pile_size > 3 ? 4 : pile_size;  // Exclusive bound.
+  return n > 0 && (n < max_stones_to_take || (n == pile_size == 1));
 }
 
+// Returns the number of stones left in the pile after the human took them.
 int take_stones_human(int pile_size) {
-	return pile_size - get_integer("How many will you take? ", &can_take_stones, "That's not an integer\n", "Invalid amount\n", pile_size);
+  int stones_to_take = rose::GetInteger(
+      "How many will you take? ", &can_take_stones, "That's not an integer\n",
+      "Invalid amount\n", pile_size);
+  return pile_size - stones_to_take;
 }
 
-int take_stones_robot(int pile_size) {
-	int stones_to_take;
-	if (pile_size <= 2) {
-		stones_to_take = 1;
-	} else if (pile_size == 3) {
-		stones_to_take = 2;
-	} else if (pile_size == 4) {
-		stones_to_take = 3;
-	} else {
-		stones_to_take = rand() % 3 + 1;
-	}
+// Returns the number of stones left in the pile after the robot took them.
+// The caller must supply a random number generator `std::mt19937`.
+int take_stones_robot(int pile_size, std::mt19937& rng) {
+  int stones_to_take;
+  if (pile_size <= 2) {
+    stones_to_take = 1;
+  } else if (pile_size == 3) {
+    stones_to_take = 2;
+  } else if (pile_size == 4) {
+    stones_to_take = 3;
+  } else {
+    std::uniform_int_distribution<int> stone_distribution(1, 3);
+    stones_to_take = stone_distribution(rng);
+  }
 
-	std::cout << "Computer takes " << stones_to_take << "\n\n";
-	return pile_size - stones_to_take;
+  std::cout << "Computer takes " << stones_to_take << "\n\n";
+  return pile_size - stones_to_take;
 }

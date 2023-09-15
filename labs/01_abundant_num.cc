@@ -41,6 +41,7 @@ int main() {
         break;
       default:
         std::cout << "What the frick did you do?\n\n";
+        break;
     }
   }
 }
