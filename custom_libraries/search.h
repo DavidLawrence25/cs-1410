@@ -13,7 +13,7 @@ int BinarySearch(std::vector<int> numbers, int value) {
   while (left_bound <= right_bound) {
     // This roundabout way of calculating the arithmetic mean
     // helps prevent an integer overflow.
-    int middle_index = left_bound + (right_bound - left_bound) >> 1;
+    int middle_index = left_bound + (right_bound - left_bound) * 0.5;
     if (numbers.at(middle_index) < value) {
       left_bound = middle_index + 1;
     } else if (numbers.at(middle_index) > value) {

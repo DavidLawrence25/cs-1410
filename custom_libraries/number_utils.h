@@ -17,7 +17,7 @@ int FloorSqrt(int x) {
   while (left_bound <= right_bound) {
     // This roundabout way of calculating the arithmetic mean
     // helps prevent an integer overflow.
-    int middle_value = left_bound + (right_bound - left_bound) >> 1;
+    int middle_value = left_bound + (right_bound - left_bound) * 0.5;
 
     if (middle_value == x / middle_value) {
       return middle_value;
