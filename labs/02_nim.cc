@@ -1,8 +1,3 @@
-/*
-	For all the code Rose wrote for CS 1410, visit this Git repository:
-	https://github.com/DavidLawrence25/cs-1410
-*/
-
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>

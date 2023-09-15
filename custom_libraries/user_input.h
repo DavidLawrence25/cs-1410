@@ -1,137 +1,119 @@
-/*
-	For all the code Rose wrote for CS 1410, visit this Git repository:
-	https://github.com/DavidLawrence25/cs-1410
-*/
-
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
-int menu_prompt(const std::string prompt, const std::string option_not_found_message, const std::unordered_map<std::string, int> options) {
-	while (true) {
-		std::string option;
+#include "number_utils.h"
 
-		std::cout << prompt;
-		std::cin >> option;
+#ifndef CS1410_CUSTOMLIBRARIES_USERINPUT_H_
+#define CS1410_CUSTOMLIBRARIES_USERINPUT_H_
 
-		if (options.find(option) != options.end()) {
-			return options.at(option);
-		}
+// A set of various string representations of the number 0. Used several times
+// throughout the file, especially in functions that need to check whether or
+// not the number was valid.
+const std::unordered_set<std::string> kZeros =
+    {"0", "0.", "0.0", "0.00", "0.000", "0.0000", "0.00000", "0.000000",
+     "0.0000000", "0.00000000", "0.000000000", "0.0000000000", "0.00000000000",
+     "0.000000000000", "0.0000000000000", "0.00000000000000",
+     "0.000000000000000", "+0", "+0.", "+0.0", "+0.00", "+0.000", "+0.0000",
+     "+0.00000", "+0.000000", "+0.0000000", "+0.00000000", "+0.000000000",
+     "+0.0000000000", "+0.00000000000", "+0.000000000000", "+0.0000000000000",
+     "+0.00000000000000", "+0.000000000000000", "-0", "-0.", "-0.0", "-0.00",
+     "-0.000", "-0.0000", "-0.00000", "-0.000000", "-0.0000000", "-0.00000000",
+     "-0.000000000", "-0.0000000000", "-0.00000000000", "-0.000000000000",
+     "-0.0000000000000", "-0.00000000000000", "-0.000000000000000",};
 
-		std::cout << option_not_found_message;
-	}
+// Returns a number based on the option the end user picked. Loops until the
+// user's input is one from the options provided.
+int menu_prompt(std::string prompt, std::string option_not_found_message,
+                std::unordered_map<std::string, int> options) {
+  while (true) {
+    std::string option;
+
+    std::cout << prompt;
+    std::cin >> option;
+
+    if (options.find(option) != options.end()) return options.at(option);
+
+    std::cout << option_not_found_message;
+  }
 }
 
-int get_integer(const std::string prompt, const std::string conversion_failed_message) {
-	while (true) {
-		std::string input;
+// Gets an integer from the user and returns it. Loops until the user's input is
+// a proper integer.
+int get_integer(std::string prompt, std::string conversion_failed_message) {
+  while (true) {
+    std::string input;
 
-		std::cout << prompt;
-		std::cin >> input;
+    std::cout << prompt;
+    std::cin >> input;
 
-		try {
-			return stoi(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << conversion_failed_message;
-		}
-	}
+    int x = StringToInt(input);
+    if (x != 0 || kZeros.find(input) != kZeros.end()) return x;
+    std::cout << conversion_failed_message;
+  }
 }
 
+// Gets an integer from the user and returns it. Loops until the user's input is
+// a proper integer that satisfies the validator function.
 template <typename... ExtraArgs>
-int get_integer(const std::string prompt, bool (*validator)(int, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args) {
-	while (true) {
-		std::string input;
+int get_integer(std::string prompt, bool (*validator)(int, ExtraArgs...),
+                std::string conversion_failed_message,
+                std::string validator_failed_message, ExtraArgs... extra_args) {
+  while (true) {
+    std::string input;
 
-		std::cout << prompt;
-		std::cin >> input;
+    std::cout << prompt;
+    std::cin >> input;
 
-		int x;
-		try {
-			x = stoi(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << conversion_failed_message;
-			continue;
-		}
-		if (validator(x, extra_args...)) {
-			return x;
-		}
+    int x = StringToInt(input);
+    if (x == 0 && kZeros.find(input) == kZeros.end()) {
+      std::cout << conversion_failed_message;
+      continue;
+    }
 
-		std::cout << validator_failed_message;
-	}
+    if (validator(x, extra_args...)) return x;
+    std::cout << validator_failed_message;
+  }
 }
 
-float get_float(const std::string prompt, const std::string conversion_failed_message) {
-	while (true) {
-		std::string input;
+// Gets a double from the user and returns it. Loops until the user's input is
+// a proper double.
+double get_double(std::string prompt, std::string conversion_failed_message) {
+  while (true) {
+    std::string input;
 
-		std::cout << prompt;
-		std::cin >> input;
+    std::cout << prompt;
+    std::cin >> input;
 
-		try {
-			return stof(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << conversion_failed_message;
-		}
-	}
+    double x = StringToDouble(input);
+    if (x != 0.0 || kZeros.find(input) != kZeros.end()) return x;
+    std::cout << conversion_failed_message;
+  }
 }
 
+// Gets a double from the user and returns it. Loops until the user's input is
+// a proper double that satisfies the validator function.
 template <typename... ExtraArgs>
-float get_float(const std::string prompt, bool (*validator)(float, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args) {
-	while (true) {
-		std::string input;
+double get_double(std::string prompt, bool (*validator)(double, ExtraArgs...),
+                  std::string conversion_failed_message,
+                  std::string validator_failed_message,
+                  ExtraArgs... extra_args) {
+  while (true) {
+    std::string input;
 
-		std::cout << prompt;
-		std::cin >> input;
+    std::cout << prompt;
+    std::cin >> input;
 
-		float x;
-		try {
-			x = stof(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << conversion_failed_message;
-			continue;
-		}
-		if (validator(x, extra_args...)) {
-			return x;
-		}
+    double x = StringToDouble(input);
+    if (x == 0.0 && kZeros.find(input) == kZeros.end()) {
+      std::cout << conversion_failed_message;
+      continue;
+    }
 
-		std::cout << validator_failed_message;
-	}
+    if (validator(x, extra_args...)) return x;
+    std::cout << validator_failed_message;
+  }
 }
 
-double get_double(const std::string prompt, const std::string conversion_failed_message) {
-	while (true) {
-		std::string input;
-
-		std::cout << prompt;
-		std::cin >> input;
-
-		try {
-			return stod(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << conversion_failed_message;
-		}
-	}
-}
-
-template <typename... ExtraArgs>
-double get_double(const std::string prompt, bool (*validator)(double, ExtraArgs...), const std::string conversion_failed_message, const std::string validator_failed_message, ExtraArgs... extra_args) {
-	while (true) {
-		std::string input;
-
-		std::cout << prompt;
-		std::cin >> input;
-
-		double x;
-		try {
-			x = stod(input);
-		} catch (const std::invalid_argument& ia) {
-			std::cout << conversion_failed_message;
-			continue;
-		}
-		if (validator(x, extra_args...)) {
-			return x;
-		}
-
-		std::cout << validator_failed_message;
-	}
-}
+#endif // CS1410_CUSTOMLIBRARIES_USERINPUT_H_
