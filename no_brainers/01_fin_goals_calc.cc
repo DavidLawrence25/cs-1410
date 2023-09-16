@@ -56,7 +56,7 @@ void calculate_years() {
   const double kGoal = rose::GetDouble(
       "Enter Financial Goal: ", kConversionFailedMessage);
 
-  // There may be a better way to calculate the width to print at.
+  // TODO: There may be a better way to calculate the width to print at.
   const int kGoalWidth = static_cast<int>(log10(kGoal)) + 4;
 
   int years = 0;

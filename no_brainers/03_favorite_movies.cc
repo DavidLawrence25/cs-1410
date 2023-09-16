@@ -2,31 +2,40 @@
 #include <string>
 #include <unordered_map>
 
-enum Rating {G, PG, PG13, R, X};
-std::unordered_map<Rating, std::string> RATING_NAMES {
-	{G, "G"},
-	{PG, "PG"},
-	{PG13, "PG-13"},
-	{R, "R"},
-	{X, "X"}
+enum Rating {
+  kGeneralAudiences,
+  kParentalGuidanceSuggested,
+  kParentsStronglyCautioned,
+  kRestricted,
+  kAdultsOnly
+};
+
+// Technically could go inside the Movie struct, but this rating system isn't
+// unique to movies. The enum Rating is also in the global scope.
+const std::unordered_map<Rating, std::string> kRatingNames = {
+  {kGeneralAudiences, "G"},
+  {kParentalGuidanceSuggested, "PG"},
+  {kParentsStronglyCautioned, "PG-13"},
+  {kRestricted, "R"},
+  {kAdultsOnly, "NC-17"}
 };
 
 struct Movie {
-	std::string title;
-	int release_year;
-	Rating rating;
+ public:
+  std::string title;
+  int release_year;
+  Rating rating;
 
-	void display();
+  void display() {
+    std::cout << '"' << title << "\" (" << kRatingNames.at(rating)
+    << " | " << release_year << ")\n";
+  }
 };
 
-void Movie::display() {
-	std::cout << '"' << title << "\" (" << RATING_NAMES.at(rating) << " | " << release_year << ")\n";
-}
-
 int main() {
-	std::cout << "Favorite Movies!\n";
-	Movie favorite_movie {"The Princess Bride", 1987, PG};
-	favorite_movie.display();
+  std::cout << "Favorite Movies!\n";
+  Movie favorite_movie = {"The Princess Bride", 1987, kGeneralAudiences};
+  favorite_movie.display();
 
-	return 0;
+  return 0;
 }
