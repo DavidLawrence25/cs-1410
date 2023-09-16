@@ -36,7 +36,7 @@ int main() {
 // Prints the menu and returns the option the user picks.
 // Shorthand for a specific `rose::MenuPrompt` function call.
 int menu() {
-  return rose::MenuPrompt(
+  return rose::MenuPrompt<int>(
     "1. Calculate Years to Financial Goal\n2. Calculate Amount Based on Years\n3. Quit\n",
     "Invalid input. Please try again\n",
     {{"1", 1}, {"2", 2}, {"3", 3}}

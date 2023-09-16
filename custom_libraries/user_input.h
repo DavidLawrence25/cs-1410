@@ -25,10 +25,11 @@ const std::unordered_set<std::string> kZeros =
      "-0.000000000", "-0.0000000000", "-0.00000000000", "-0.000000000000",
      "-0.0000000000000", "-0.00000000000000", "-0.000000000000000",};
 
-// Returns a number based on the option the end user picked. Loops until the
+// Returns an option specified by the end user. Loops until the
 // user's input is one from the options provided.
-int MenuPrompt(std::string prompt, std::string option_not_found_message,
-               std::unordered_map<std::string, int> options) {
+template <typename T>
+T MenuPrompt(std::string prompt, std::string option_not_found_message,
+             std::unordered_map<std::string, T> options) {
   while (true) {
     std::string option;
 
