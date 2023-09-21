@@ -1,0 +1,6 @@
+class PigPlayer {
+ public:
+  
+ private:
+  
+};
