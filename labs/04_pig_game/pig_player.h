@@ -14,7 +14,7 @@ class PigPlayer {
   void RollDie(std::mt19937 rng);
 
  private:
-  rose::Die die_ = {std::uniform_int_distribution<int>{1, 6}};
+  rose::Die die_ = {/*sides=*/6};
   int turn_total_ = 0;
   int game_total_ = 0;
 };
