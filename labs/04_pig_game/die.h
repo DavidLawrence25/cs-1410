@@ -7,12 +7,11 @@ namespace rose {
 
 class Die {
  public:
-  Die(std::uniform_int_distribution<int> distribution);
-  Die(std::uniform_int_distribution<int> distribution, int value);
+  Die(int sides);
+  Die(int sides, int value);
 
   int get_value();
-  int get_min_value();
-  int get_max_value();
+  int get_sides();
   void set_distribution(std::uniform_int_distribution<int> distribution);
   void Roll(std::mt19937 rng);
 

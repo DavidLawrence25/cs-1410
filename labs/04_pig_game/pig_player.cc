@@ -7,7 +7,8 @@ bool rose::PigPlayer::CanMove() {
 }
 
 bool rose::PigPlayer::ShouldMove() {
-  // Note: If the computer could be uncertain, put rng as a parameter
+  int n = die_.get_sides() * (die_.get_sides() + 1) * 0.5 - 1;
+  return turn_total_ < n;
 }
 
 void rose::PigPlayer::RollDie(std::mt19937 rng) {

@@ -2,12 +2,12 @@
 
 #include <random>
 
-rose::Die::Die(std::uniform_int_distribution<int> distribution) {
-  distribution_ = distribution;
+rose::Die::Die(int sides) {
+  distribution_ = std::uniform_int_distribution<int>{1, sides};
 }
 
-rose::Die::Die(std::uniform_int_distribution<int> distribution, int value) {
-  distribution_ = distribution;
+rose::Die::Die(int sides, int value) {
+  distribution_ = std::uniform_int_distribution<int>{1, sides};
   value_ = value;
 }
 
@@ -15,11 +15,7 @@ int rose::Die::get_value() {
   return value_;
 }
 
-int rose::Die::get_min_value() {
-  return distribution_.min();
-}
-
-int rose::Die::get_max_value() {
+int rose::Die::get_sides() {
   return distribution_.max();
 }
 
