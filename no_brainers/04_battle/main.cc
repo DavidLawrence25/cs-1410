@@ -1,12 +1,10 @@
-#include "no_brainers/04_battle/pokemon.cc"
-
 #include <time.h>
 
 #include <iostream>
 #include <random>
-#include <sstream>
 
 #include "custom_libraries/user_input.h"
+#include "no_brainers/04_battle/pokemon.cc"
 
 // Options the user can pick during battle.
 enum BattleOption {

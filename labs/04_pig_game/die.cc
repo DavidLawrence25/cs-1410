@@ -24,6 +24,7 @@ void rose::Die::set_distribution(
   distribution_ = distribution;
 }
 
-void rose::Die::Roll(std::mt19937 rng) {
+// Sets value by rolling the die.
+void rose::Die::Roll(std::mt19937 &rng) {
   value_ = distribution_(rng);
 }

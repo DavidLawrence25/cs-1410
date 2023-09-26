@@ -13,7 +13,8 @@ class Die {
   int get_value();
   int get_sides();
   void set_distribution(std::uniform_int_distribution<int> distribution);
-  void Roll(std::mt19937 rng);
+  // Rolls the die.
+  void Roll(std::mt19937 &rng);
 
  private:
   std::uniform_int_distribution<int> distribution_;
