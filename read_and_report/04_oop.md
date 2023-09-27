@@ -78,9 +78,3 @@ The private level is only accessible to the class/object itself. Nowhere else in
 > &ensp;&ensp;void print();<br>
 > &ensp;&ensp;void read();
 > </code>
-
-<br>
-
-# 9.2 - UML Class Diagrams
-
-
