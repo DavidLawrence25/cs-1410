@@ -47,27 +47,53 @@ class Binary {
   void operator>>=(Binary other);
   void operator>>=(int other);
 
+  bool operator==(Binary other);
+  bool operator==(int other);
+
+  bool operator!=(Binary other);
+  bool operator!=(int other);
+
+  bool operator<(Binary other);
+  bool operator<(int other);
+  bool operator<=(Binary other);
+  bool operator<=(int other);
+
+  bool operator>(Binary other);
+  bool operator>(int other);
+  bool operator>=(Binary other);
+  bool operator>=(int other);
+
  private:
   int value_;
 };
 
-Binary operator+(int x, const Binary &y);
-void operator+=(int x, const Binary &y);
+Binary operator+(int x, Binary &y);
+void operator+=(int x, Binary &y);
 
-Binary operator-(int x, const Binary &y);
-void operator-=(int x, const Binary &y);
+Binary operator-(int x, Binary &y);
+void operator-=(int x, Binary &y);
 
-Binary operator*(int x, const Binary &y);
-void operator*=(int x, const Binary &y);
+Binary operator*(int x, Binary &y);
+void operator*=(int x, Binary &y);
 
-Binary operator/(int x, const Binary &y);
-void operator/=(int x, const Binary &y);
+Binary operator/(int x, Binary &y);
+void operator/=(int x, Binary &y);
 
-Binary operator<<(int x, const Binary &y);
-void operator<<=(int x, const Binary &y);
+Binary operator<<(int x, Binary &y);
+void operator<<=(int x, Binary &y);
 
-Binary operator>>(int x, const Binary &y);
-void operator>>=(int x, const Binary &y);
+Binary operator>>(int x, Binary &y);
+void operator>>=(int x, Binary &y);
+
+bool operator==(int x, Binary &y);
+
+bool operator!=(int x, Binary &y);
+
+bool operator>(int x, Binary &y);
+bool operator>=(int x, Binary &y);
+
+bool operator<(int x, Binary &y);
+bool operator<=(int x, Binary &y);
 
 std::ostream &operator<<(std::ostream &out, Binary &x);
 

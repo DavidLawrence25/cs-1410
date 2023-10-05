@@ -48,3 +48,160 @@ std::string rose::Binary::ToString() {
   if (value_ < 0) s.insert(0, "-");
   return s;
 }
+
+rose::Binary rose::Binary::operator+() {
+  return *this;
+}
+
+rose::Binary rose::Binary::operator-() {
+  return Binary(-value_);
+}
+
+rose::Binary rose::Binary::operator+(rose::Binary other) {
+  return Binary(value_ + other.value_);
+}
+
+rose::Binary rose::Binary::operator+(int other) {
+  return Binary(value_ + other);
+}
+
+void rose::Binary::operator+=(rose::Binary other) {
+  value_ += other.value_;
+}
+
+void rose::Binary::operator+=(int other) {
+  value_ += other;
+}
+
+rose::Binary rose::Binary::operator-(rose::Binary other) {
+  return Binary(value_ - other.value_);
+}
+
+rose::Binary rose::Binary::operator-(int other) {
+  return Binary(value_ - other);
+}
+
+void rose::Binary::operator-=(rose::Binary other) {
+  value_ -= other.value_;
+}
+
+void rose::Binary::operator-=(int other) {
+  value_ -= other;
+}
+
+rose::Binary rose::Binary::operator*(rose::Binary other) {
+  return Binary(value_ * other.value_);
+}
+
+rose::Binary rose::Binary::operator*(int other) {
+  return Binary(value_ * other);
+}
+
+void rose::Binary::operator*=(rose::Binary other) {
+  value_ *= other.value_;
+}
+
+void rose::Binary::operator*=(int other) {
+  value_ *= other;
+}
+
+rose::Binary rose::Binary::operator/(rose::Binary other) {
+  return Binary(value_ / other.value_);
+}
+
+rose::Binary rose::Binary::operator/(int other) {
+  return Binary(value_ / other);
+}
+
+void rose::Binary::operator/=(rose::Binary other) {
+  value_ /= other.value_;
+}
+
+void rose::Binary::operator/=(int other) {
+  value_ /= other;
+}
+
+rose::Binary rose::Binary::operator<<(rose::Binary other) {
+  return Binary(value_ << other.value_);
+}
+
+rose::Binary rose::Binary::operator<<(int other) {
+  return Binary(value_ << other);
+}
+
+void rose::Binary::operator<<=(rose::Binary other) {
+  value_ <<= other.value_;
+}
+
+void rose::Binary::operator<<=(int other) {
+  value_ <<= other;
+}
+
+rose::Binary rose::Binary::operator>>(rose::Binary other) {
+  return Binary(value_ >> other.value_);
+}
+
+rose::Binary rose::Binary::operator>>(int other) {
+  return Binary(value_ >> other);
+}
+
+void rose::Binary::operator>>=(rose::Binary other) {
+  value_ >>= other.value_;
+}
+
+void rose::Binary::operator>>=(int other) {
+  value_ >>= other;
+}
+
+rose::Binary operator+(int x, rose::Binary &y) {
+  return rose::Binary(x + y.get_value());
+}
+
+void operator+=(int x, rose::Binary &y) {
+  x += y.get_value();
+}
+
+rose::Binary operator-(int x, rose::Binary &y) {
+  return rose::Binary(x - y.get_value());
+}
+
+void operator-=(int x, rose::Binary &y) {
+  x -= y.get_value();
+}
+
+rose::Binary operator*(int x, rose::Binary &y) {
+  return rose::Binary(x * y.get_value());
+}
+
+void operator*=(int x, rose::Binary &y) {
+  x *= y.get_value();
+}
+
+rose::Binary operator/(int x, rose::Binary &y) {
+  return rose::Binary(x / y.get_value());
+}
+
+void operator/=(int x, rose::Binary &y) {
+  x /= y.get_value();
+}
+
+rose::Binary operator<<(int x, rose::Binary &y) {
+  return rose::Binary(x << y.get_value());
+}
+
+void operator<<=(int x, rose::Binary &y) {
+  x <<= y.get_value();
+}
+
+rose::Binary operator>>(int x, rose::Binary &y) {
+  return rose::Binary(x >> y.get_value());
+}
+
+void operator>>=(int x, rose::Binary &y) {
+  x >>= y.get_value();
+}
+
+std::ostream &operator<<(std::ostream &out, rose::Binary &x) {
+  out << x.ToString();
+  return out;
+}
