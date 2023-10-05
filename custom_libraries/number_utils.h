@@ -132,21 +132,6 @@ double StringToDouble(std::string str) {
   return is_negative ? -x : x;
 }
 
-// Returns the value of a string `str`, interpreted as an unsigned integer in
-// base 2. If no suitable conversion can be made, returns -1.
-int BinaryStringToInt(std::string str) {
-  int number = 0;
-  for (char c : str) {
-    number <<= 1;
-    if (c == '1') {
-      ++number;
-    } else if (c != '0') {
-      return -1;
-    }
-  }
-  return number;
-}
-
 }  // namespace rose
 
 #endif  // CS1410_CUSTOMLIBRARIES_NUMBERUTILS_H_
