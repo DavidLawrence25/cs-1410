@@ -10,6 +10,7 @@ class Binary {
   Binary();
   Binary(int x);
   Binary(std::string s);
+  Binary(Binary &other);
 
   int get_value();
   std::string ToString();
@@ -17,50 +18,50 @@ class Binary {
   Binary operator+();
   Binary operator-();
 
-  Binary operator+(Binary other);
+  Binary operator+(Binary &other);
   Binary operator+(int other);
-  void operator+=(Binary other);
+  void operator+=(Binary &other);
   void operator+=(int other);
 
-  Binary operator-(Binary other);
+  Binary operator-(Binary &other);
   Binary operator-(int other);
-  void operator-=(Binary other);
+  void operator-=(Binary &other);
   void operator-=(int other);
 
-  Binary operator*(Binary other);
+  Binary operator*(Binary &other);
   Binary operator*(int other);
-  void operator*=(Binary other);
+  void operator*=(Binary &other);
   void operator*=(int other);
 
-  Binary operator/(Binary other);
+  Binary operator/(Binary &other);
   Binary operator/(int other);
-  void operator/=(Binary other);
+  void operator/=(Binary &other);
   void operator/=(int other);
 
-  Binary operator<<(Binary other);
+  Binary operator<<(Binary &other);
   Binary operator<<(int other);
-  void operator<<=(Binary other);
+  void operator<<=(Binary &other);
   void operator<<=(int other);
 
-  Binary operator>>(Binary other);
+  Binary operator>>(Binary &other);
   Binary operator>>(int other);
-  void operator>>=(Binary other);
+  void operator>>=(Binary &other);
   void operator>>=(int other);
 
-  bool operator==(Binary other);
+  bool operator==(Binary &other);
   bool operator==(int other);
 
-  bool operator!=(Binary other);
+  bool operator!=(Binary &other);
   bool operator!=(int other);
 
-  bool operator<(Binary other);
+  bool operator<(Binary &other);
   bool operator<(int other);
-  bool operator<=(Binary other);
+  bool operator<=(Binary &other);
   bool operator<=(int other);
 
-  bool operator>(Binary other);
+  bool operator>(Binary &other);
   bool operator>(int other);
-  bool operator>=(Binary other);
+  bool operator>=(Binary &other);
   bool operator>=(int other);
 
  private:
@@ -89,11 +90,11 @@ bool operator==(int x, Binary &y);
 
 bool operator!=(int x, Binary &y);
 
-bool operator>(int x, Binary &y);
-bool operator>=(int x, Binary &y);
-
 bool operator<(int x, Binary &y);
 bool operator<=(int x, Binary &y);
+
+bool operator>(int x, Binary &y);
+bool operator>=(int x, Binary &y);
 
 std::ostream &operator<<(std::ostream &out, Binary &x);
 
