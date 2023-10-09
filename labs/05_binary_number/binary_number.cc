@@ -17,19 +17,22 @@ rose::Binary::Binary(std::string s) {
     if (!seen_first_char) {
       is_negative ^= c == '-';
       seen_first_char = true;
-      continue;
     }
 
     x <<= 1;
     if (c == '1') {
       ++x;
-    } else if (c != '0') {
+    } else if (c != '0' && c != '-' && c != '+') {
       value_ = -1;
       return;
     }
   }
 
   value_ = x;
+}
+
+rose::Binary::Binary(rose::Binary &other) {
+  value_ = other.value_;
 }
 
 int rose::Binary::get_value() {
@@ -205,7 +208,7 @@ rose::Binary operator+(int x, rose::Binary &y) {
   return rose::Binary(x + y.get_value());
 }
 
-void operator+=(int x, rose::Binary &y) {
+void operator+=(int &x, rose::Binary &y) {
   x += y.get_value();
 }
 
@@ -213,7 +216,7 @@ rose::Binary operator-(int x, rose::Binary &y) {
   return rose::Binary(x - y.get_value());
 }
 
-void operator-=(int x, rose::Binary &y) {
+void operator-=(int &x, rose::Binary &y) {
   x -= y.get_value();
 }
 
@@ -221,7 +224,7 @@ rose::Binary operator*(int x, rose::Binary &y) {
   return rose::Binary(x * y.get_value());
 }
 
-void operator*=(int x, rose::Binary &y) {
+void operator*=(int &x, rose::Binary &y) {
   x *= y.get_value();
 }
 
@@ -229,7 +232,7 @@ rose::Binary operator/(int x, rose::Binary &y) {
   return rose::Binary(x / y.get_value());
 }
 
-void operator/=(int x, rose::Binary &y) {
+void operator/=(int &x, rose::Binary &y) {
   x /= y.get_value();
 }
 
@@ -237,7 +240,7 @@ rose::Binary operator<<(int x, rose::Binary &y) {
   return rose::Binary(x << y.get_value());
 }
 
-void operator<<=(int x, rose::Binary &y) {
+void operator<<=(int &x, rose::Binary &y) {
   x <<= y.get_value();
 }
 
@@ -245,7 +248,7 @@ rose::Binary operator>>(int x, rose::Binary &y) {
   return rose::Binary(x >> y.get_value());
 }
 
-void operator>>=(int x, rose::Binary &y) {
+void operator>>=(int &x, rose::Binary &y) {
   x >>= y.get_value();
 }
 

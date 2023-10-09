@@ -68,36 +68,6 @@ class Binary {
   int value_;
 };
 
-Binary operator+(int x, Binary &y);
-void operator+=(int x, Binary &y);
-
-Binary operator-(int x, Binary &y);
-void operator-=(int x, Binary &y);
-
-Binary operator*(int x, Binary &y);
-void operator*=(int x, Binary &y);
-
-Binary operator/(int x, Binary &y);
-void operator/=(int x, Binary &y);
-
-Binary operator<<(int x, Binary &y);
-void operator<<=(int x, Binary &y);
-
-Binary operator>>(int x, Binary &y);
-void operator>>=(int x, Binary &y);
-
-bool operator==(int x, Binary &y);
-
-bool operator!=(int x, Binary &y);
-
-bool operator<(int x, Binary &y);
-bool operator<=(int x, Binary &y);
-
-bool operator>(int x, Binary &y);
-bool operator>=(int x, Binary &y);
-
-std::ostream &operator<<(std::ostream &out, Binary &x);
-
 }
 
 #endif  // CS1410_LABS_05BINARYNUMBER_BINARYNUMBER_H_
