@@ -5,6 +5,8 @@
 
 namespace rose {
 
+// An admittedly overcomplicated wrapper around an integer
+// that can convert its value to and from a binary string.
 class Binary {
  public:
   Binary();
