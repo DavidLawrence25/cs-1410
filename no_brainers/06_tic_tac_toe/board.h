@@ -1,5 +1,7 @@
 #include "no_brainers/06_tic_tac_toe/tile.h"
 
+#include <vector>
+
 #ifndef CS1410_NOBRAINERS_06TICTACTOE_BOARD_H_
 #define CS1410_NOBRAINERS_06TICTACTOE_BOARD_H_
 
@@ -8,11 +10,11 @@ namespace rose {
 class Board {
  public:
   Board();
-  Board(Tile tiles[9]);
+  Board(std::vector<Tile> tiles);
   Board(Board &other);
 
-  Tile *get_row(int index);
-  Tile *get_column(int index);
+  std::vector<Tile> get_row(int index);
+  std::vector<Tile> get_column(int index);
   Tile get_tile(int index);
   Tile get_tile(int row, int column);
 
@@ -22,7 +24,7 @@ class Board {
   bool LineExists(Tile line_type);
 
  private:
-  Tile tiles_[9];
+  std::vector<Tile> tiles_;
 };
 
 }

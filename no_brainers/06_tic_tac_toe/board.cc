@@ -6,7 +6,7 @@ rose::Board::Board() {
   }
 }
 
-rose::Board::Board(rose::Tile tiles[9]) {
+rose::Board::Board(std::vector<rose::Tile> tiles) {
   for (int i = 0; i < 9; ++i) {
     tiles_[i] = tiles[i];
   }
@@ -18,28 +18,14 @@ rose::Board::Board(rose::Board &other) {
   }
 }
 
-rose::Tile *rose::Board::get_row(int index) {
-  rose::Tile row[3];
-  if (index < 0 || index > 2) {
-    row[0] = row[1] = row[2] = kEmpty;
-  } else {
-    row[0] = tiles_[3 * index];
-    row[1] = tiles_[3 * index + 1];
-    row[2] = tiles_[3 * index + 2];
-  }
-  return row;
+std::vector<rose::Tile> rose::Board::get_row(int index) {
+  if (index < 0 || index > 2) return {kEmpty, kEmpty, kEmpty};
+  return {tiles_[3 * index], tiles_[3 * index + 1], tiles_[3 * index + 2]};
 }
 
-rose::Tile *rose::Board::get_column(int index) {
-  rose::Tile column[3];
-  if (index < 0 || index > 2) {
-    column[0] = column[1] = column[2] = kEmpty;
-  } else {
-    column[0] = tiles_[index];
-    column[1] = tiles_[index + 3];
-    column[2] = tiles_[index + 6];
-  }
-  return column;
+std::vector<rose::Tile> rose::Board::get_column(int index) {
+  if (index < 0 || index > 2) return {kEmpty, kEmpty, kEmpty};
+  return {tiles_[index], tiles_[index + 3], tiles_[index + 6]};
 }
 
 rose::Tile rose::Board::get_tile(int index) {
@@ -63,14 +49,14 @@ void rose::Board::set_tile(int row, int column, rose::Tile tile) {
 }
 
 bool rose::Board::LineExists(rose::Tile line_type) {
-  rose::Tile *row0 = get_row(0);
-  rose::Tile *row1 = get_row(1);
-  rose::Tile *row2 = get_row(2);
-  rose::Tile *column0 = get_column(0);
-  rose::Tile *column1 = get_column(1);
-  rose::Tile *column2 = get_column(2);
-  rose::Tile diagonal0[3] = {tiles_[0], tiles_[4], tiles_[8]};
-  rose::Tile diagonal1[3] = {tiles_[2], tiles_[4], tiles_[6]};
+  std::vector<rose::Tile> row0 = get_row(0);
+  std::vector<rose::Tile> row1 = get_row(1);
+  std::vector<rose::Tile> row2 = get_row(2);
+  std::vector<rose::Tile> column0 = get_column(0);
+  std::vector<rose::Tile> column1 = get_column(1);
+  std::vector<rose::Tile> column2 = get_column(2);
+  std::vector<rose::Tile> diagonal0 = {tiles_[0], tiles_[4], tiles_[8]};
+  std::vector<rose::Tile> diagonal1 = {tiles_[2], tiles_[4], tiles_[6]};
 
   // TODO: Check for horizontal lines.
   // TODO: Check for vertical lines.
