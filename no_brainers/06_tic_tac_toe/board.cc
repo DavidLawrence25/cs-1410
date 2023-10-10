@@ -18,16 +18,6 @@ rose::Board::Board(rose::Board &other) {
   }
 }
 
-std::vector<rose::Tile> rose::Board::get_row(int index) {
-  if (index < 0 || index > 2) return {kEmpty, kEmpty, kEmpty};
-  return {tiles_[3 * index], tiles_[3 * index + 1], tiles_[3 * index + 2]};
-}
-
-std::vector<rose::Tile> rose::Board::get_column(int index) {
-  if (index < 0 || index > 2) return {kEmpty, kEmpty, kEmpty};
-  return {tiles_[index], tiles_[index + 3], tiles_[index + 6]};
-}
-
 rose::Tile rose::Board::get_tile(int index) {
   return index < 0 || index > 8 ? kEmpty : tiles_[index];
 }
@@ -49,16 +39,17 @@ void rose::Board::set_tile(int row, int column, rose::Tile tile) {
 }
 
 bool rose::Board::LineExists(rose::Tile line_type) {
-  std::vector<rose::Tile> row0 = get_row(0);
-  std::vector<rose::Tile> row1 = get_row(1);
-  std::vector<rose::Tile> row2 = get_row(2);
-  std::vector<rose::Tile> column0 = get_column(0);
-  std::vector<rose::Tile> column1 = get_column(1);
-  std::vector<rose::Tile> column2 = get_column(2);
-  std::vector<rose::Tile> diagonal0 = {tiles_[0], tiles_[4], tiles_[8]};
-  std::vector<rose::Tile> diagonal1 = {tiles_[2], tiles_[4], tiles_[6]};
+  // Check for horizontal lines.
+  if (tiles_[0] == tiles_[1] == tiles_[2] == line_type) return true;
+  if (tiles_[3] == tiles_[4] == tiles_[5] == line_type) return true;
+  if (tiles_[6] == tiles_[7] == tiles_[8] == line_type) return true;
+  // Check for vertical lines.
+  if (tiles_[0] == tiles_[3] == tiles_[6] == line_type) return true;
+  if (tiles_[1] == tiles_[4] == tiles_[7] == line_type) return true;
+  if (tiles_[2] == tiles_[5] == tiles_[8] == line_type) return true;
+  // Check for diagonal lines.
+  if (tiles_[0] == tiles_[4] == tiles_[8] == line_type) return true;
+  if (tiles_[2] == tiles_[4] == tiles_[6] == line_type) return true;
 
-  // TODO: Check for horizontal lines.
-  // TODO: Check for vertical lines.
-  // TODO: Check for diagonal lines.
+  return false;
 }

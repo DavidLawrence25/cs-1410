@@ -13,8 +13,6 @@ class Board {
   Board(std::vector<Tile> tiles);
   Board(Board &other);
 
-  std::vector<Tile> get_row(int index);
-  std::vector<Tile> get_column(int index);
   Tile get_tile(int index);
   Tile get_tile(int row, int column);
 
