@@ -20,6 +20,9 @@ void rose::Player::set_tile_type(rose::Tile tile_type) {
   tile_type_ = tile_type;
 }
 
+// Gets an index on the interval [0, 8] from the user. The corresponding tile
+// in `board` is guaranteed to be kEmpty. Corresponds to a specific call of
+// `rose::GetInteger` from custom_libraries/number_utils.h.
 int rose::Player::RequestIndex(rose::Board &board) {
   std::stringstream prompt;
   prompt << rose::kTileChar.at(tile_type_);
@@ -29,6 +32,8 @@ int rose::Player::RequestIndex(rose::Board &board) {
                           "Invalid move. Please try again\n", board);
 }
 
+// Sets the tile at `index` in `board` to the player's tile.
+// Calls `board`'s `set_tile` method internally.
 void rose::Player::PlaceTile(rose::Board &board, int index) {
   board.set_tile(index, tile_type_);
 }
