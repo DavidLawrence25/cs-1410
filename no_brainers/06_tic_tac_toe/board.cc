@@ -7,21 +7,15 @@
 #include "no_brainers/06_tic_tac_toe/tile.h"
 
 rose::Board::Board() {
-  for (int i = 0; i < 9; ++i) {
-    tiles_[i] = kEmpty;
-  }
+  for (int i = 0; i < 9; ++i) tiles_.push_back(kEmpty);
 }
 
 rose::Board::Board(std::vector<rose::Tile> tiles) {
-  for (int i = 0; i < 9; ++i) {
-    tiles_[i] = tiles[i];
-  }
+  tiles_ = tiles;
 }
 
 rose::Board::Board(rose::Board &other) {
-  for (int i = 0; i < 9; ++i) {
-    tiles_[i] = other.tiles_[i];
-  }
+  tiles_ = other.tiles_;
 }
 
 rose::Tile rose::Board::get_tile(int index) {
@@ -42,20 +36,39 @@ void rose::Board::set_tile(int row, int column, rose::Tile tile) {
   if (IsValidIndex(index)) tiles_[index] = tile;
 }
 
+bool rose::Board::TileExists(rose::Tile tile_type) {
+  for (rose::Tile tile : tiles_) {
+    if (tile == tile_type) return true;
+  }
+  return false;
+}
+
 bool rose::Board::LineExists(rose::Tile line_type) {
   // Check for horizontal lines.
-  if (tiles_[0] == tiles_[1] == tiles_[2] == line_type) return true;
-  if (tiles_[3] == tiles_[4] == tiles_[5] == line_type) return true;
-  if (tiles_[6] == tiles_[7] == tiles_[8] == line_type) return true;
+  if (tiles_[0] == line_type && tiles_[1] == line_type
+      && tiles_[2] == line_type) return true;
+  if (tiles_[3] == line_type && tiles_[4] == line_type
+      && tiles_[5] == line_type) return true;
+  if (tiles_[6] == line_type && tiles_[7] == line_type
+      && tiles_[8] == line_type) return true;
   // Check for vertical lines.
-  if (tiles_[0] == tiles_[3] == tiles_[6] == line_type) return true;
-  if (tiles_[1] == tiles_[4] == tiles_[7] == line_type) return true;
-  if (tiles_[2] == tiles_[5] == tiles_[8] == line_type) return true;
+  if (tiles_[0] == line_type && tiles_[3] == line_type
+      && tiles_[6] == line_type) return true;
+  if (tiles_[1] == line_type && tiles_[4] == line_type
+      && tiles_[7] == line_type) return true;
+  if (tiles_[2] == line_type && tiles_[5] == line_type
+      && tiles_[8] == line_type) return true;
   // Check for diagonal lines.
-  if (tiles_[0] == tiles_[4] == tiles_[8] == line_type) return true;
-  if (tiles_[2] == tiles_[4] == tiles_[6] == line_type) return true;
+  if (tiles_[0] == line_type && tiles_[4] == line_type
+      && tiles_[8] == line_type) return true;
+  if (tiles_[2] == line_type && tiles_[4] == line_type
+      && tiles_[6] == line_type) return true;
 
   return false;
+}
+
+bool rose::Board::CanPlaceTile(int index, rose::Board board) {
+  return IsValidIndex(index) && board.get_tile(index) == kEmpty;
 }
 
 std::string rose::Board::ToString() {
@@ -63,7 +76,11 @@ std::string rose::Board::ToString() {
   result << "Current Board: \n";
   for (int i = 0; i < 9; ++i) {
     rose::Tile tile = tiles_[i];
-    result << (tile != kEmpty) ? rose::kTileChar.at(tile) : i;
+    if (tile != kEmpty) {
+      result << rose::kTileChar.at(tile);
+    } else {
+      result << i;
+    }
     if (i % 3 != 2) {
       result << " | ";
     } else {

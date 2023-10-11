@@ -20,13 +20,13 @@ void rose::Player::set_tile_type(rose::Tile tile_type) {
   tile_type_ = tile_type;
 }
 
-int rose::Player::RequestIndex() {
+int rose::Player::RequestIndex(rose::Board &board) {
   std::stringstream prompt;
   prompt << rose::kTileChar.at(tile_type_);
   prompt << ": Select your move (press a number from 0-8, then press enter) ";
-  return rose::GetInteger(prompt.str(), rose::Board::IsValidIndex,
+  return rose::GetInteger(prompt.str(), rose::Board::CanPlaceTile,
                           "Invalid move. Please try again\n",
-                          "Invalid move. Please try again\n");
+                          "Invalid move. Please try again\n", board);
 }
 
 void rose::Player::PlaceTile(rose::Board &board, int index) {

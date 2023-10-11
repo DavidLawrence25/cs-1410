@@ -16,7 +16,7 @@ class Player {
 
   void set_tile_type(Tile tile_type);
 
-  int RequestIndex();
+  int RequestIndex(Board &board);
   void PlaceTile(Board &board, int index);
 
  private:

@@ -20,9 +20,11 @@ class Board {
   void set_tile(int index, Tile tile);
   void set_tile(int row, int column, Tile tile);
 
+  bool TileExists(Tile tile_type);
   bool LineExists(Tile line_type);
   std::string ToString();
 
+  static bool CanPlaceTile(int index, Board board);
   static bool IsValidIndex(int index);
 
  private:
