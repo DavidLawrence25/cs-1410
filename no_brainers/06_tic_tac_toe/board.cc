@@ -1,5 +1,11 @@
 #include "no_brainers/06_tic_tac_toe/board.h"
 
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include "no_brainers/06_tic_tac_toe/tile.h"
+
 rose::Board::Board() {
   for (int i = 0; i < 9; ++i) {
     tiles_[i] = kEmpty;
@@ -19,23 +25,21 @@ rose::Board::Board(rose::Board &other) {
 }
 
 rose::Tile rose::Board::get_tile(int index) {
-  return index < 0 || index > 8 ? kEmpty : tiles_[index];
+  return IsValidIndex(index) ? tiles_[index] : kEmpty;
 }
 
 rose::Tile rose::Board::get_tile(int row, int column) {
   int index = 3 * row + column;
-  return index < 0 || index > 8 ? kEmpty : tiles_[index];
+  return IsValidIndex(index) ? tiles_[index] : kEmpty;
 }
 
 void rose::Board::set_tile(int index, rose::Tile tile) {
-  if (index < 0 || index > 8) return;
-  tiles_[index] = tile;
+  if (IsValidIndex(index)) tiles_[index] = tile;
 }
 
 void rose::Board::set_tile(int row, int column, rose::Tile tile) {
   int index = 3 * row + column;
-  if (index < 0 || index > 8) return;
-  tiles_[index] = tile;
+  if (IsValidIndex(index)) tiles_[index] = tile;
 }
 
 bool rose::Board::LineExists(rose::Tile line_type) {
@@ -52,4 +56,24 @@ bool rose::Board::LineExists(rose::Tile line_type) {
   if (tiles_[2] == tiles_[4] == tiles_[6] == line_type) return true;
 
   return false;
+}
+
+std::string rose::Board::ToString() {
+  std::stringstream result;
+  result << "Current Board: \n";
+  for (int i = 0; i < 9; ++i) {
+    rose::Tile tile = tiles_[i];
+    result << (tile != kEmpty) ? rose::kTileChar.at(tile) : i;
+    if (i % 3 != 2) {
+      result << " | ";
+    } else {
+      result << '\n';
+      if (i != 8) result << "--+---+--\n";
+    }
+  }
+  return result.str();
+}
+
+bool rose::Board::IsValidIndex(int index) {
+  return index >= 0 && index < 9;
 }

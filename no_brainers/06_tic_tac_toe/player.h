@@ -10,19 +10,16 @@ namespace rose {
 
 class Player {
  public:
-  Player(std::string name, Tile tile_type);
+  Player(Tile tile_type);
 
-  std::string get_name();
   Tile get_tile_type();
 
-  void set_name(std::string name);
   void set_tile_type(Tile tile_type);
 
-  std::vector<int> RequestPosition();
-  void PlaceTile();
+  int RequestIndex();
+  void PlaceTile(Board &board, int index);
 
  private:
-  std::string name_;
   Tile tile_type_;
 };
 
