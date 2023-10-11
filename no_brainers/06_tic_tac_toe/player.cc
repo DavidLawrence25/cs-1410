@@ -22,7 +22,7 @@ void rose::Player::set_tile_type(rose::Tile tile_type) {
 
 // Gets an index on the interval [0, 8] from the user. The corresponding tile
 // in `board` is guaranteed to be kEmpty. Corresponds to a specific call of
-// `rose::GetInteger` from custom_libraries/number_utils.h.
+// `rose::GetInteger` from custom_libraries/user_input.h.
 int rose::Player::RequestIndex(rose::Board &board) {
   std::stringstream prompt;
   prompt << rose::kTileChar.at(tile_type_);
