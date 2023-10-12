@@ -1,4 +1,5 @@
 #include <random>
+#include <string>
 #include <vector>
 
 #ifndef CS1410_LABS_06SLIDEPUZZLE_PUZZLE_H_
@@ -16,14 +17,18 @@ class Puzzle {
 
   // Returns true if a tile exists in the puzzle with the given `value`.
   bool TileExists(int value);
-  // Returns true if the tile at `position` is adjacent to an empty tile.
-  bool CanMoveTile(std::vector<int> position);
+  // Returns true if a tile exists at the given `position`.
+  bool TileExists(std::vector<int> position);
   // Returns true if a tile with the given `value` is adjacent to an empty tile.
   bool CanMoveTile(int value);
+  // Returns true if the tile at `position` is adjacent to an empty tile.
+  bool CanMoveTile(std::vector<int> position);
   // Swaps the values of two tiles, specified by `position0` and `position1`.
   void SwapTiles(std::vector<int> position0, std::vector<int> position1);
   // Shuffles the puzzle with `moves` number of moves.
-  void Shuffle(std::mt19937 rng, int moves);
+  void Shuffle(std::mt19937 &rng, int moves);
+  // Returns the puzzle as a string.
+  std::string ToString();
 
  private:
   int size_;
