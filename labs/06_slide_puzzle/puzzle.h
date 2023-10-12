@@ -10,8 +10,6 @@ namespace rose {
 class Puzzle {
  public:
   Puzzle(int size);
-  Puzzle(std::vector<std::vector<int>> tiles);
-  Puzzle(int size, std::vector<std::vector<int>> tiles);
   Puzzle(Puzzle &other);
 
   std::vector<int> get_position_of(int value);
