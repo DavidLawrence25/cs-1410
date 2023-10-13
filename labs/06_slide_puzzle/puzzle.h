@@ -20,9 +20,11 @@ class Puzzle {
   // Returns true if a tile exists at the given `position`.
   bool TileExists(std::vector<int> position);
   // Returns true if a tile with the given `value` is adjacent to an empty tile.
-  bool CanMoveTile(int value);
+  static bool CanMoveTile(int value, Puzzle puzzle);
   // Returns true if the tile at `position` is adjacent to an empty tile.
-  bool CanMoveTile(std::vector<int> position);
+  static bool CanMoveTile(std::vector<int> position, Puzzle puzzle);
+  // Returns true if the puzzle is in a solved permutation.
+  bool IsSolved();
   // Swaps the values of two tiles, specified by `position0` and `position1`.
   void SwapTiles(std::vector<int> position0, std::vector<int> position1);
   // Shuffles the puzzle with `moves` number of moves.
