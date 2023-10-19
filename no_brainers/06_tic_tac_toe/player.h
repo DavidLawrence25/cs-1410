@@ -27,6 +27,6 @@ class Player {
   Tile tile_type_;
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_NOBRAINERS_06TICTACTOE_PLAYER_H_

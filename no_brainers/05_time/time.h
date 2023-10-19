@@ -31,6 +31,6 @@ class Time {
 
 std::ostream &operator<<(std::ostream &out, Time &time);
 
-}
+}  // namespace rose
 
 #endif  // CS1410_NOBRAINERS_05TIME_TIME_H_

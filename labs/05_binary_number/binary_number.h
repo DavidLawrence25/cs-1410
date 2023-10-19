@@ -70,6 +70,6 @@ class Binary {
   int value_;
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_LABS_05BINARYNUMBER_BINARYNUMBER_H_

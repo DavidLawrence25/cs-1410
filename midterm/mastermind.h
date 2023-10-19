@@ -23,6 +23,6 @@ class Mastermind {
   std::string solution_;
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_MIDTERM_MASTERMIND_H_

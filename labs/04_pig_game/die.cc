@@ -16,7 +16,7 @@ int rose::Die::get_value() {
 }
 
 int rose::Die::get_sides() {
-  return distribution_.max();
+  return distribution_.b();
 }
 
 void rose::Die::set_distribution(

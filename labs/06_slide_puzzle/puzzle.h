@@ -37,6 +37,6 @@ class Puzzle {
   std::vector<std::vector<int>> tiles_;
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_LABS_06SLIDEPUZZLE_PUZZLE_H_

@@ -51,6 +51,6 @@ class CyclicInt {
   int value_;
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_CUSTOMLIBRARIES_CYCLICINT_H_

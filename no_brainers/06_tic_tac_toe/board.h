@@ -37,6 +37,6 @@ class Board {
   std::vector<Tile> tiles_;
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_NOBRAINERS_06TICTACTOE_BOARD_H_

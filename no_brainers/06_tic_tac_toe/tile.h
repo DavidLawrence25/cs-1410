@@ -19,6 +19,6 @@ const std::unordered_map<Tile, char> kTileChar = {
   {kCircle, 'O'}
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_NOBRAINERS_06TICTACTOE_TILE_H_
