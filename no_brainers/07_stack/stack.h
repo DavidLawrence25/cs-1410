@@ -6,14 +6,13 @@
 
 namespace rose {
 
-// Represents a node in a linked list.
-template <typename T>
+// Represents a node containing a string in a linked list.
 struct Node {
-  T data;
+  std::string data;
   Node *next;
 };
 
-// Represents a LIFO stack of data in memory.
+// Represents a LIFO stack of strings.
 class Stack {
  public:
   Stack();
@@ -22,20 +21,18 @@ class Stack {
   // Returns true if the stack has no items.
   bool IsEmpty();
   // Pushes the value `data` onto the top of the stack.
-  template <typename T>
-  void Push(T data);
+  void Push(std::string data);
   // Removes the value at the top of the stack.
   void Pop();
   // Returns the value at the top of the stack.
-  template <typename T>
-  T Peek();
+  std::string Peek();
 
-  friend std::ostream &operator<<(std::ostream out, const Stack &stack);
+  friend std::ostream &operator<<(std::ostream &out, const Stack &stack);
 
  private:
-  Node<std::string> *top;
+  Node *top_;
 };
 
-}
+}  // namespace rose
 
 #endif  // CS1410_NOBRAINERS_07STACK_STACK_H_
