@@ -2,7 +2,7 @@
 #include <random>
 
 #include "custom_libraries/user_input.h"
-#include "labs/06_slide_puzzle/puzzle.cc"
+#include "puzzle.h"
 
 int main() {
   const int kPuzzleSize = 3;

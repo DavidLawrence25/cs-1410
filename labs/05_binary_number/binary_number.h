@@ -1,3 +1,4 @@
+#include <ostream>
 #include <string>
 
 #ifndef CS1410_LABS_05BINARYNUMBER_BINARYNUMBER_H_
@@ -20,27 +21,27 @@ class Binary {
   Binary operator+();
   Binary operator-();
 
-  Binary operator+(Binary &other);
+  Binary operator+(Binary other);
   Binary operator+(int other);
   void operator+=(Binary &other);
   void operator+=(int other);
 
-  Binary operator-(Binary &other);
+  Binary operator-(Binary other);
   Binary operator-(int other);
   void operator-=(Binary &other);
   void operator-=(int other);
 
-  Binary operator*(Binary &other);
+  Binary operator*(Binary other);
   Binary operator*(int other);
   void operator*=(Binary &other);
   void operator*=(int other);
 
-  Binary operator/(Binary &other);
+  Binary operator/(Binary other);
   Binary operator/(int other);
   void operator/=(Binary &other);
   void operator/=(int other);
 
-  Binary operator<<(Binary &other);
+  Binary operator<<(Binary other);
   Binary operator<<(int other);
   void operator<<=(Binary &other);
   void operator<<=(int other);
@@ -69,6 +70,38 @@ class Binary {
  private:
   int value_;
 };
+
+int operator+(int x, Binary y);
+int &operator+=(int &x, Binary &y);
+
+int operator-(int x, Binary y);
+int &operator-=(int &x, Binary &y);
+
+int operator*(int x, Binary y);
+int &operator*=(int &x, Binary &y);
+
+int operator/(int x, Binary y);
+int &operator/=(int &x, Binary &y);
+
+int operator<<(int x, Binary y);
+int &operator<<=(int &x, Binary &y);
+
+int operator>>(int x, Binary y);
+int &operator>>=(int &x, Binary &y);
+
+bool operator==(int x, Binary y);
+
+bool operator!=(int x, Binary y);
+
+bool operator<(int x, Binary y);
+
+bool operator<=(int x, Binary y);
+
+bool operator>(int x, Binary y);
+
+bool operator>=(int x, Binary y);
+
+std::ostream &operator<<(std::ostream &out, Binary &x);
 
 }  // namespace rose
 

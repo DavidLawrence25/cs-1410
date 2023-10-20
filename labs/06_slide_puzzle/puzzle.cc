@@ -1,4 +1,4 @@
-#include "labs/06_slide_puzzle/puzzle.h"
+#include "puzzle.h"
 
 #include <iomanip>
 #include <random>

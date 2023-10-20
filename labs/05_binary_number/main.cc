@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "labs/05_binary_number/binary_number.cc"
+#include "labs/05_binary_number/binary_number.h"
 
 template <typename T>
 void TestResult(std::string code, T result, T expected);
@@ -38,46 +38,46 @@ int main() {
   TestResult("Binary b5 = b2 + 243;", b5.get_value(), 420);
 
   std::cout << "-- INTEGER + BINARY --\n";
-  rose::Binary b6 = 21 + b1;
-  TestResult("Binary b6 = 21 + b1;", b6.get_value(), 90);
+  int x0 = 21 + b1;
+  TestResult("int x0 = 21 + b1;", x0, 90);
 
   std::cout << "-- BINARY += BINARY --\n";
-  b6 += b2;
-  TestResult("b6 += b2;", b6.get_value(), 287);
+  b5 += b2;
+  TestResult("b5 += b2;", b5.get_value(), 617);
 
   std::cout << "-- BINARY += INTEGER --\n";
   b3 += 1;
   TestResult("b3 += 1;", b3.get_value(), 70);
 
   std::cout << "-- INTEGER += BINARY --\n";
-  int x = 5;
-  x += b6;
-  TestResult("int x = 5; x += b6;", x, 292);
+  int x1 = 5;
+  x1 += b5;
+  TestResult("int x1 = 5; x1 += b5;", x1, 622);
 
   std::cout << "-- BINARY - BINARY --\n";
-  rose::Binary b7 = b6 - b5;
-  TestResult("Binary b7 = b6 - b5;", b7.get_value(), -133);
+  rose::Binary b6 = b5 - b4;
+  TestResult("Binary b6 = b5 - b4;", b6.get_value(), 351);
 
   std::cout << "-- BINARY - INTEGER --\n";
-  rose::Binary b8 = b5 - 20;
-  TestResult("Binary b8 = b5 - 20;", b8.get_value(), 400);
+  rose::Binary b7 = b3 - 20;
+  TestResult("Binary b7 = b3 - 20;", b7.get_value(), 50);
 
   std::cout << "-- INTEGER - BINARY --\n";
-  rose::Binary b9 = 50 - b5;
-  TestResult("Binary b9 = 50 - b5;", b9.get_value(), -370);
+  int x2 = 50 - b1;
+  TestResult("int x2 = 50 - b1;", x2, -19);
 
   std::cout << "-- BINARY -= BINARY --\n";
-  b8 -= b9;
-  TestResult("b8 -= b9;", b8.get_value(), 770);
+  b6 -= b7;
+  TestResult("b6 -= b7;", b6.get_value(), 301);
 
   std::cout << "-- BINARY -= INTEGER --\n";
-  b8 -= 800;
-  TestResult("b8 -= 800;", b8.get_value(), -30);
+  b1 -= 100;
+  TestResult("b1 -= 100;", b1.get_value(), -31);
 
   std::cout << "-- INTEGER -= BINARY --\n";
-  int y = 50;
-  y -= b8;
-  TestResult("int y = 50; y -= b8;", y, 80);
+  int x3 = 50;
+  x3 -= b7;
+  TestResult("int x3 = 50; x3 -= b7;", x3, 0);
 
   return 0;
 }
