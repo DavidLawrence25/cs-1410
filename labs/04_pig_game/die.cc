@@ -1,4 +1,4 @@
-#include "labs/04_pig_game/die.h"
+#include "die.h"
 
 #include <random>
 

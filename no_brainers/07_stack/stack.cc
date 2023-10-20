@@ -1,4 +1,4 @@
-#include "no_brainers/07_stack/stack.h"
+#include "stack.h"
 
 namespace rose {
 

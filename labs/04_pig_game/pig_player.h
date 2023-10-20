@@ -1,6 +1,6 @@
 #include <random>
 
-#include "labs/04_pig_game/die.cc"
+#include "die.h"
 
 #ifndef CS1410_LABS_04PIGGAME_PIGPLAYER_H_
 #define CS1410_LABS_04PIGGAME_PIGPLAYER_H_

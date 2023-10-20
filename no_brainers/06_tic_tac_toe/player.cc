@@ -1,12 +1,12 @@
-#include "no_brainers/06_tic_tac_toe/player.h"
+#include "player.h"
 
 #include <sstream>
 #include <string>
 #include <vector>
 
+#include "board.h"
 #include "custom_libraries/user_input.h"
-#include "no_brainers/06_tic_tac_toe/board.h"
-#include "no_brainers/06_tic_tac_toe/tile.h"
+#include "tile.h"
 
 rose::Player::Player(rose::Tile tile_type) {
   tile_type_ = tile_type;

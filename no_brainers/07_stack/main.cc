@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "no_brainers/07_stack/stack.cc"
+#include "stack.h"
 
 int main() {
   std::cout << "== STACK VIA LINKED LIST ==\n";

@@ -1,4 +1,4 @@
-#include "labs/05_binary_number/binary_number.h"
+#include "binary_number.h"
 
 rose::Binary::Binary() {
   value_ = 0;

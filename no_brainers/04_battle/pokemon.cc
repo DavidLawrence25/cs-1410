@@ -1,4 +1,4 @@
-#include "no_brainers/04_battle/pokemon.h"
+#include "pokemon.h"
 
 #include <random>
 #include <sstream>

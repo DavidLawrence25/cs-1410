@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 
+#include "board.h"
 #include "custom_libraries/cyclic_int.h"
-#include "no_brainers/06_tic_tac_toe/board.cc"
-#include "no_brainers/06_tic_tac_toe/player.cc"
-#include "no_brainers/06_tic_tac_toe/tile.h"
+#include "player.h"
+#include "tile.h"
 
 int main() {
   std::vector<rose::Player> player_pool = {{rose::kCross}, {rose::kCircle}};

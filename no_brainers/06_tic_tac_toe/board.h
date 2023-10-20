@@ -1,7 +1,7 @@
-#include "no_brainers/06_tic_tac_toe/tile.h"
-
 #include <string>
 #include <vector>
+
+#include "tile.h"
 
 #ifndef CS1410_NOBRAINERS_06TICTACTOE_BOARD_H_
 #define CS1410_NOBRAINERS_06TICTACTOE_BOARD_H_

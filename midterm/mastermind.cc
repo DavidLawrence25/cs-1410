@@ -1,4 +1,4 @@
-#include "midterm/mastermind.h"
+#include "mastermind.h"
 
 #include <random>
 #include <string>

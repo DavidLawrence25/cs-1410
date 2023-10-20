@@ -4,7 +4,7 @@
 #include <random>
 
 #include "custom_libraries/user_input.h"
-#include "no_brainers/04_battle/pokemon.cc"
+#include "pokemon.h"
 
 // Options the user can pick during battle.
 enum BattleOption {

@@ -1,4 +1,4 @@
-#include "no_brainers/05_time/time.cc"
+#include "time.h"
 
 int main() {
   rose::Time time0;
@@ -12,4 +12,6 @@ int main() {
   std::cout << "time1 = " << time1 << '\n';
   std::cout << "time2 = " << time2 << '\n';
   std::cout << "time1 + time2 = " << time3 << '\n';
+
+  return 0;
 }

@@ -1,10 +1,10 @@
-#include "no_brainers/06_tic_tac_toe/board.h"
+#include "board.h"
 
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "no_brainers/06_tic_tac_toe/tile.h"
+#include "tile.h"
 
 rose::Board::Board() {
   for (int i = 0; i < 9; ++i) tiles_.push_back(kEmpty);

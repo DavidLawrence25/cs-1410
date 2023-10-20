@@ -1,4 +1,4 @@
-#include "no_brainers/05_time/time.h"
+#include "time.h"
 
 #include <iostream>
 #include <string>
@@ -12,7 +12,7 @@ rose::Time::Time() {
 rose::Time::Time(int seconds) {
   hours_ = 0;
   minutes_ = 0;
-  seconds_ = 0;
+  seconds_ = seconds;
   Adjust();
 }
 

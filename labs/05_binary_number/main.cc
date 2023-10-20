@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "labs/05_binary_number/binary_number.h"
+#include "binary_number.h"
 
 template <typename T>
 void TestResult(std::string code, T result, T expected);

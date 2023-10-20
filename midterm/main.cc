@@ -1,7 +1,7 @@
 #include <iostream>
 #include <random>
 
-#include "midterm/mastermind.cc"
+#include "mastermind.h"
 
 void Menu();
 void PlayGame();

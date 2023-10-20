@@ -7,7 +7,7 @@
 #include <sstream>
 
 #include "custom_libraries/user_input.h"
-#include "labs/04_pig_game/pig_player.cc"
+#include "pig_player.h"
 
 // Types of turns specified by the player in control.
 enum TurnType {
