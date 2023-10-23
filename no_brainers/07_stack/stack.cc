@@ -17,7 +17,7 @@ bool Stack::IsEmpty() {
 
 // Pushes the value `data` onto the top of the stack.
 void Stack::Push(std::string data) {
-  Node *to_add = new Node{data, IsEmpty() ? nullptr : top_};
+  Node *to_add = new Node{data, top_};
   top_ = to_add;
 }
 
