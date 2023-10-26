@@ -15,11 +15,15 @@ SLinkedList<T>::~SLinkedList() {
   while (!IsEmpty()) Pop();
 }
 
+// Returns a pointer to the first element in the list.
+// If no such element exists, returns `nullptr`.
 template <typename T>
 Node<T> *SLinkedList<T>::head() {
   return head_;
 }
 
+// Returns a pointer to the last element in the list.
+// If no such element exists, returns `nullptr`.
 template <typename T>
 Node<T> *SLinkedList<T>::tail() {
   Node<T> *current = head_;
@@ -27,16 +31,19 @@ Node<T> *SLinkedList<T>::tail() {
   return current;
 }
 
+// Returns the number of elements in the list.
 template <typename T>
 size_t SLinkedList<T>::length() {
   return length_;
 }
 
+// Returns true if the list contains 0 elements.
 template <typename T>
 bool SLinkedList<T>::IsEmpty() {
   return length_ == 0;
 }
 
+// Returns true if the list contains at least 1 element of the given value.
 template <typename T>
 bool SLinkedList<T>::Contains(T element) {
   Node<T> *current = head_;
@@ -47,6 +54,7 @@ bool SLinkedList<T>::Contains(T element) {
   return false;
 }
 
+// Pushes an element with the given value to the front of the list.
 template <typename T>
 void SLinkedList<T>::Push(T element) {
   Node<T> *to_add = new Node<T>{element, head_};
@@ -54,6 +62,8 @@ void SLinkedList<T>::Push(T element) {
   ++length_;
 }
 
+// Inserts an element with the given value at the given index `i`.
+// Does nothing if `i` is strictly greater than the length of the list.
 template <typename T>
 void SLinkedList<T>::Insert(T element, size_t i) {
   if (i > length_) return;
@@ -74,6 +84,7 @@ void SLinkedList<T>::Insert(T element, size_t i) {
   ++length_;
 }
 
+// Appends an element with the given value to the end of the list.
 template <typename T>
 void SLinkedList<T>::Append(T element) {
   Node<T> *to_add = new Node<T>{element, nullptr};
@@ -81,6 +92,7 @@ void SLinkedList<T>::Append(T element) {
   ++length_;
 }
 
+// Removes the first element in the list. Does not return the element's value.
 template <typename T>
 void SLinkedList<T>::Pop() {
   if (IsEmpty()) return;
@@ -90,6 +102,8 @@ void SLinkedList<T>::Pop() {
   --length_;
 }
 
+// Removes the first element in the list with the given value.
+// Does nothing if no such element exists.
 template <typename T>
 void SLinkedList<T>::Remove(T element) {
   Node<T> *before = nullptr;
@@ -109,6 +123,8 @@ void SLinkedList<T>::Remove(T element) {
   --length_;
 }
 
+// Removes the element at the specified index `i`.
+// Does nothing if `i` is greater than or equal to the length of the list.
 template <typename T>
 void SLinkedList<T>::Remove(size_t i) {
   if (i >= length_) return;
@@ -126,16 +142,21 @@ void SLinkedList<T>::Remove(size_t i) {
   --length_;
 }
 
+// Returns the value of the first element in the list.
+// Returns NULL if no such element exists.
 template <typename T>
 T SLinkedList<T>::PeekHead() {
   return IsEmpty() ? NULL : head_->data;
 }
 
+// Returns the value of the last element in the list.
+// Returns NULL if no such element exists.
 template <typename T>
 T SLinkedList<T>::PeekTail() {
   return IsEmpty() ? NULL : tail()->data;
 }
 
+// Reverses the order of elements in the list.
 template <typename T>
 void SLinkedList<T>::Reverse() {
   Node<T> *before = nullptr;
