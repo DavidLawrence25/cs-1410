@@ -23,12 +23,15 @@ class Stack {
   // Returns the value at the top of the stack.
   T Peek();
 
-  friend std::ostream &operator<<(std::ostream &out, const Stack &stack);
+  template <typename Y>
+  friend std::ostream &operator<<(std::ostream &out, const Stack<Y> &stack);
 
  private:
   SLinkedList<T> elements_;
 };
 
 }  // namespace rose
+
+#include "stack.cc"
 
 #endif  // CS1410_NOBRAINERS_08STACKTEMPLATE_STACK_H_

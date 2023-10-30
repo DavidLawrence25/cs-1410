@@ -20,11 +20,11 @@ class SLinkedList {
   ~SLinkedList();
 
   // Returns a pointer to the first element in the list.
-  Node<T> *head();
+  Node<T> *head() const;
   // Returns a pointer to the last element in the list.
-  Node<T> *tail();
+  Node<T> *tail() const;
   // Returns how many elements are in the list.
-  size_t length();
+  size_t length() const;
 
   // Returns true if there are no elements in the list.
   bool IsEmpty();
@@ -55,5 +55,7 @@ class SLinkedList {
 };
 
 }  // namespace rose
+
+#include "s_linked_list.cc"
 
 #endif  // CS1410_CUSTOMLIBRARIES_LINKEDLIST_H_

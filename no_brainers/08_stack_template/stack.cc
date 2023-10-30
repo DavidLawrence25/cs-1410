@@ -39,9 +39,9 @@ T Stack<T>::Peek() {
   return elements_.PeekHead();
 }
 
-template <typename T>
-std::ostream &operator<<(std::ostream &out, const Stack<T> &stack) {
-  Node<T> *current = stack.elements_.head_;
+template <typename Y>
+std::ostream &operator<<(std::ostream &out, const Stack<Y> &stack) {
+  Node<Y> *current = stack.elements_.head();
   while (current != nullptr) {
     out << current->data << ' ';  // TODO: Remove trailing whitespace.
     current = current->next;

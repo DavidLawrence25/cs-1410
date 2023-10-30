@@ -18,14 +18,14 @@ SLinkedList<T>::~SLinkedList() {
 // Returns a pointer to the first element in the list.
 // If no such element exists, returns `nullptr`.
 template <typename T>
-Node<T> *SLinkedList<T>::head() {
+Node<T> *SLinkedList<T>::head() const {
   return head_;
 }
 
 // Returns a pointer to the last element in the list.
 // If no such element exists, returns `nullptr`.
 template <typename T>
-Node<T> *SLinkedList<T>::tail() {
+Node<T> *SLinkedList<T>::tail() const {
   Node<T> *current = head_;
   while (current->next != nullptr) current = current->next;
   return current;
@@ -33,7 +33,7 @@ Node<T> *SLinkedList<T>::tail() {
 
 // Returns the number of elements in the list.
 template <typename T>
-size_t SLinkedList<T>::length() {
+size_t SLinkedList<T>::length() const {
   return length_;
 }
 
