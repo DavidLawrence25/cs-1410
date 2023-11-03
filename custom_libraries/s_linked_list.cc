@@ -26,7 +26,9 @@ Node<T> *SLinkedList<T>::head() const {
 // If no such element exists, returns `nullptr`.
 template <typename T>
 Node<T> *SLinkedList<T>::tail() const {
-  Node<T> *current = head_;
+  if (IsEmpty()) return nullptr;
+
+  Node<T> *current = head();
   while (current->next != nullptr) current = current->next;
   return current;
 }
@@ -39,13 +41,13 @@ size_t SLinkedList<T>::length() const {
 
 // Returns true if the list contains 0 elements.
 template <typename T>
-bool SLinkedList<T>::IsEmpty() {
+bool SLinkedList<T>::IsEmpty() const {
   return length_ == 0;
 }
 
 // Returns true if the list contains at least 1 element of the given value.
 template <typename T>
-bool SLinkedList<T>::Contains(T element) {
+bool SLinkedList<T>::Contains(T element) const {
   Node<T> *current = head_;
   while (current != nullptr) {
     if (current->data == element) return true;
@@ -88,7 +90,13 @@ void SLinkedList<T>::Insert(T element, size_t i) {
 template <typename T>
 void SLinkedList<T>::Append(T element) {
   Node<T> *to_add = new Node<T>{element, nullptr};
-  tail()->next = to_add;
+
+  if (IsEmpty()) {
+    head_ = to_add;
+  } else {
+    tail()->next = to_add;
+  }
+
   ++length_;
 }
 
@@ -96,6 +104,7 @@ void SLinkedList<T>::Append(T element) {
 template <typename T>
 void SLinkedList<T>::Pop() {
   if (IsEmpty()) return;
+
   Node<T> *old_head = head_;
   head_ = head_->next;
   delete old_head;
@@ -143,17 +152,17 @@ void SLinkedList<T>::Remove(size_t i) {
 }
 
 // Returns the value of the first element in the list.
-// Returns NULL if no such element exists.
+// Returns 0 if no such element exists.
 template <typename T>
-T SLinkedList<T>::PeekHead() {
-  return IsEmpty() ? NULL : head_->data;
+T SLinkedList<T>::PeekHead() const {
+  return IsEmpty() ? 0 : head()->data;
 }
 
 // Returns the value of the last element in the list.
-// Returns NULL if no such element exists.
+// Returns 0 if no such element exists.
 template <typename T>
-T SLinkedList<T>::PeekTail() {
-  return IsEmpty() ? NULL : tail()->data;
+T SLinkedList<T>::PeekTail() const {
+  return IsEmpty() ? 0 : tail()->data;
 }
 
 // Reverses the order of elements in the list.

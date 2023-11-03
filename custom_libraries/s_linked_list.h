@@ -27,9 +27,9 @@ class SLinkedList {
   size_t length() const;
 
   // Returns true if there are no elements in the list.
-  bool IsEmpty();
+  bool IsEmpty() const;
   // Returns true if the list contains an element with the given value.
-  bool Contains(T element);
+  bool Contains(T element) const;
   // Adds an element with the given value to the front (index 0) of the list.
   void Push(T element);
   // Inserts an element with the given value at the specified index `i`.
@@ -43,9 +43,9 @@ class SLinkedList {
   // Removes the element at the specified index `i`.
   void Remove(size_t i);
   // Returns the value of the first element in the list.
-  T PeekHead();
+  T PeekHead() const;
   // Returns the value of the last element in the list.
-  T PeekTail();
+  T PeekTail() const;
   // Reverses the order of elements in the list.
   void Reverse();
 
