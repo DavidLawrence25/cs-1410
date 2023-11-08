@@ -41,7 +41,7 @@ See that `#include` statement at the top of the file? The `iostream` library rel
 
 Streams come in two flavors: input and output. On the most basic level, input streams write data, whereas output streams read data. The aforementioned `std::cout` and `std::cin` are instances of the `std::ostream` and `std::istream` classes respectively. Besides the `std::ios` class, these two are the most fundamental streams in the C++ language.
 
-It can sometimes be confusing to reason through which stream to use. The console streams are fairly intuitive, but reading and writing to other types of objects is less so. The basic rule to keep in mind is that the words "input" and "output" apply directly to the thing the stream is pointing to. If you want to write to a file, you're putting data **into** that file and therefore should use an input stream (specifically `std::ifstream`). Similarly, if you want to read from a file, you're getting data **out** of that file, so you should use an output stream (specifically `std::ofstream`).
+It can sometimes be confusing to reason through which stream to use. The console streams are fairly intuitive, but reading and writing to other types of objects is less so. The basic rule to keep in mind is that the words "input" and "output" are relative to the program. If you want to write to a file, the program will **output** data to that file and therefore should use an output stream (specifically `std::ofstream`). Similarly, if you want to read from a file, the program will take **input** from the file, so you should use an input stream (specifically `std::ifstream`).
 
 # 14.2 - Important File Footnotes
 
