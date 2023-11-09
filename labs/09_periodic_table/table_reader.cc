@@ -18,6 +18,9 @@ TableReader::TableReader(std::string table_path) {
   table_path_ = table_path;
 }
 
+// Returns the position of the line in the Periodic Table file
+// containing the element with an atomic number of `number`.
+// Returns -1 if no such element exists.
 int TableReader::FindLineByNumber(std::string number) {
   std::ifstream table(table_path_);
   bool found_number = false;
@@ -28,28 +31,36 @@ int TableReader::FindLineByNumber(std::string number) {
     line = table.tellg();
     std::getline(table, this_number, ',');
     found_number = (this_number == number);
-    std::getline(table, this_number, '\n');
+    std::getline(table, this_number);
   }
 
-  return found_number ? line : -1;
+  return found_number ? PurifyPosition(line, number) : -1;
 }
 
+// Returns the position of the line in the Periodic Table file
+// containing the element represented by `symbol`.
+// Returns -1 if no such element exists.
 int TableReader::FindLineBySymbol(std::string symbol) {
   std::ifstream table(table_path_);
   bool found_symbol = false;
   std::string this_symbol;
+  std::string this_number;
   int line = -1;
 
   while (table.good() && !found_symbol) {
     line = table.tellg();
-    for (size_t i = 0; i < 3; ++i) std::getline(table, this_symbol, ',');
+    std::getline(table, this_number, ',');
+    std::getline(table, this_symbol, ',');
+    std::getline(table, this_symbol, ',');
     found_symbol = (this_symbol == symbol);
-    std::getline(table, this_symbol, '\n');
+    std::getline(table, this_symbol);
   }
 
-  return found_symbol ? line : -1;
+  return found_symbol ? PurifyPosition(line, this_number) : -1;
 }
 
+// Returns the element at `position` in the file as an Element object.
+// Returns a made-up element called Nullium if `position` is invalid.
 Element TableReader::ParseLine(int position) {
   if (position < 0) return {0, "Nullium", "Nu", 0.0};
 
@@ -65,10 +76,19 @@ Element TableReader::ParseLine(int position) {
   size_t number = StringToInt(number_as_string);
   std::getline(table, name, ',');
   std::getline(table, symbol, ',');
-  std::getline(table, mass_as_string, '\n');
+  std::getline(table, mass_as_string);
   float mass = StringToDouble(mass_as_string);
 
   return {number, name, symbol, mass};
+}
+
+// Returns a modified version of `position` that
+// can be safely passed into `ParseLine`.
+// Purpose of existence and proof of algorithm's
+// legitimacy are both unknown.
+int TableReader::PurifyPosition(int position, std::string atomic_number) {
+  int number = StringToInt(atomic_number);
+  return number == 1 ? 0 : position + number - 118;
 }
 
 }  // namespace rose
