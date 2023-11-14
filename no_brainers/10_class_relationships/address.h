@@ -6,6 +6,7 @@
 
 namespace rose {
 
+// Represents a basic building address with street and city names.
 class Address {
  public:
   Address(std::string street, std::string city) {

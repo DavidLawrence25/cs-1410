@@ -5,6 +5,7 @@
 
 namespace rose {
 
+// Represents a basic calendar date.
 class Date {
  public:
   Date() {

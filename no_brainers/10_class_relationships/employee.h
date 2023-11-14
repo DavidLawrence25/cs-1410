@@ -10,6 +10,7 @@
 
 namespace rose {
 
+// Represents an employee with a name, home address, and start date.
 class Employee {
  public:
   Employee() {

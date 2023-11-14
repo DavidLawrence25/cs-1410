@@ -5,6 +5,7 @@
 
 namespace rose {
 
+// Represents an employee with a set hourly wage.
 class WagedEmployee : public Employee {
  public:
   WagedEmployee() {
@@ -21,8 +22,6 @@ class WagedEmployee : public Employee {
   }
 
   std::string ToString() override;
-
-  friend std::ostream &operator<<(std::ostream &out, WagedEmployee &employee);
 
  private:
   double wage_;
