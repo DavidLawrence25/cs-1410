@@ -31,7 +31,7 @@ class SalesEmployee : public SalariedEmployee {
 std::string SalesEmployee::ToString() {
   std::stringstream result;
   result << SalariedEmployee::ToString();
-  result << "Commission: $" << commission_ << '\n';
+  result << "Commission: " << commission_ * 100 << "%\n";
   result << "Sales: $" << sales_ << '\n';
   return result.str();
 }

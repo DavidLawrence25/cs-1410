@@ -46,8 +46,8 @@ class Employee {
 std::string Employee::ToString() {
   std::stringstream result;
   result << name_ << '\n';
-  result << start_date_ << '\n';
   if (address_ != nullptr) result << *address_;
+  result << start_date_ << '\n';
   return result.str();
 }
 
