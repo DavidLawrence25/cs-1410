@@ -14,8 +14,7 @@ class SalariedEmployee : public Employee {
   }
 
   SalariedEmployee(std::string name, int year, int month, int day,
-                   double salary) {
-    Employee(name, year, month, day);
+                   double salary) : Employee(name, year, month, day) {
     salary_ = salary;
   }
 

@@ -24,7 +24,9 @@ class Employee {
   }
 
   ~Employee() {
-    if (address_ != nullptr) delete address_;
+    if (address_ != nullptr) {
+      delete address_;
+    }
   }
 
   void set_address(std::string street, std::string city) {
@@ -45,7 +47,7 @@ std::string Employee::ToString() {
   std::stringstream result;
   result << name_ << '\n';
   result << start_date_ << '\n';
-  if (address_ != nullptr) result << *address_ << '\n';
+  if (address_ != nullptr) result << *address_;
   return result.str();
 }
 

@@ -15,8 +15,8 @@ class SalesEmployee : public SalariedEmployee {
   }
 
   SalesEmployee(std::string name, int year, int month, int day, double salary,
-                double commission, double sales) {
-    SalariedEmployee(name, year, month, day, salary);
+                double commission, double sales) : SalariedEmployee(name, year,
+                month, day, salary) {
     commission_ = commission;
     sales_ = sales;
   }

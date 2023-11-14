@@ -15,8 +15,7 @@ class WagedEmployee : public Employee {
   }
 
   WagedEmployee(std::string name, int year, int month, int day, double wage,
-                double hours) {
-    Employee(name, year, month, day);
+                double hours) : Employee(name, year, month, day) {
     wage_ = wage;
     hours_ = hours;
   }
