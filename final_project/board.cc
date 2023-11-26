@@ -7,23 +7,32 @@
 
 namespace rose {
 
-enum Color { kWhite, kYellow, kGreen };
+enum Color { kWhite, kGray, kYellow, kGreen };
 const std::unordered_map<Color, std::string> kColorStrings = {
-    {kWhite, "\033[0m"}, {kYellow, "\033[33m"}, {kGreen, "\033[32m"}};
+    {kWhite, "\033[0m"},
+    {kGray, "\033[38;5;248m"},
+    {kYellow, "\033[33m"},
+    {kGreen, "\033[32m"}};
 
-Board::Board(size_t word_length, size_t num_of_guesses, std::string list_path) {
+Board::Board(size_t word_length, size_t num_of_guesses, Dictionary dict) {
   word_length_ = word_length;
   num_of_guesses_ = num_of_guesses;
   is_solved_ = false;
-  list_path_ = list_path;
+  dict_ = dict;
 
   for (size_t i = 0; i < num_of_guesses; ++i) {
     guesses_.push_back(std::string(word_length_, ' '));
   }
 }
 
+void Board::SetRandomSolution(std::mt19937 &rng) {
+  DictionaryReader reader;
+  solution_ = reader.GetRandomSolution(dict_, rng);
+}
+
 void Board::ReadWord(size_t guess_index) {
   static const int kBackspace = 8;
+  DictionaryReader reader;
   std::string *this_word = &guesses_[guess_index];
   size_t chars_entered = 0;
   bool processing = true;
@@ -41,6 +50,11 @@ void Board::ReadWord(size_t guess_index) {
 
     if (chars_entered == word_length_) {
       processing = !(this_char == '\n' || this_char == '\r');
+      if (!processing && !reader.IsLegal(*this_word)) {
+        Display();
+        std::cout << "Not in word list\n";
+        processing = true;
+      }
       continue;
     }
 
@@ -68,7 +82,7 @@ void Board::ColorizeWord(std::string *word) {
   Color color_map[word_length_];
 
   // Populate the color map.
-  for (size_t i = 0; i < word_length_; ++i) color_map[i] = kWhite;
+  for (size_t i = 0; i < word_length_; ++i) color_map[i] = kGray;
 
   // Find exact matches (letters to color green).
   size_t exact_matches = 0;
