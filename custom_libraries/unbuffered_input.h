@@ -36,16 +36,16 @@ bool HasSymbol(std::string s);
 
 // Returns a character provided by the user based on the allowed character sets.
 char GetAsciiChar(bool allow_alpha, bool allow_num, bool allow_symbol,
-                  bool allow_special, LetterCase case_mode);
+                  LetterCase case_mode);
 
-// Returns a direction as specified by the arrow keys or WASD.
+// Returns a direction as specified by WASD.
 Direction GetDirection();
 
 // Returns a string of length `length` provided by the user based on the allowed
 // character sets. Will wait until user confirms entry if `is_enter_required`.
 std::string GetAsciiString(size_t length, bool is_enter_required,
                            bool allow_alpha, bool allow_num, bool allow_symbol,
-                           bool allow_special, LetterCase case_mode);
+                           LetterCase case_mode);
 
 }  // namespace rose
 

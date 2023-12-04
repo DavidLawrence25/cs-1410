@@ -62,4 +62,33 @@ bool HasSymbol(std::string s) {
   return seen;
 }
 
+char GetAsciiChar(bool allow_alpha, bool allow_num, bool allow_symbol,
+                  LetterCase case_mode) {
+  char this_char;
+
+  while (true) {
+    this_char = getch();
+
+    if (allow_alpha && IsAlpha(this_char) || (allow_num && IsNum(this_char)) ||
+        (allow_symbol && IsSymbol(this_char))) {
+      if (case_mode == kUpper) this_char = MakeUppercase(this_char);
+      if (case_mode == kLower) this_char = MakeLowercase(this_char);
+      return this_char;
+    }
+  }
+}
+
+Direction GetDirection() {
+  char this_char;
+
+  while (true) {
+    this_char = getch();
+
+    if (this_char == 'w' || this_char == 'W') return kUp;
+    if (this_char == 's' || this_char == 'S') return kDown;
+    if (this_char == 'a' || this_char == 'A') return kLeft;
+    if (this_char == 'd' || this_char == 'D') return kRight;
+  }
+}
+
 }  // namespace rose
