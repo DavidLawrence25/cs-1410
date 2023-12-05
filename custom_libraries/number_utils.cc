@@ -30,7 +30,7 @@ int FloorSqrt(int x) {
 // Returns an unordered set containing the factors of `x`.
 // If `x < 1`, returns `{1, x}`.
 std::unordered_set<int> FactorsOf(int x) {
-  if (x == 1) return std::unordered_set<int> {1};
+  if (x == 1) return std::unordered_set<int>{1};
 
   std::unordered_set<int> factors = {1, x};
   const int kUpperBound = FloorSqrt(x);
@@ -58,6 +58,9 @@ bool IsPrime(int x) {
   return true;
 }
 
+// Returns true if `str` represents the number 0.
+bool IsZero(std::string str) { return kZeros.find(str) != kZeros.end(); }
+
 // Returns the value of a string `str`, interpreted as an integer in base 10.
 // If no suitable conversion can be made, returns 0.
 int StringToInt(std::string str) {
@@ -79,7 +82,7 @@ int StringToInt(std::string str) {
       seen_sign = true;
     } else {
       if (kDigits.find(c) == kDigits.end()) return 0;
-      x = 10*x + kDigits.at(c);
+      x = 10 * x + kDigits.at(c);
       seen_digit = true;
     }
   }
@@ -116,7 +119,7 @@ double StringToDouble(std::string str) {
       seen_radix_point = true;
     } else {
       if (seen_sign || kDigits.find(c) == kDigits.end()) return 0.0;
-      x = 10.0*x + kDigits.at(c);
+      x = 10.0 * x + kDigits.at(c);
       seen_digit = true;
     }
   }
