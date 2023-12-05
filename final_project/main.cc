@@ -5,12 +5,15 @@
 #include "custom_libraries/number_utils.h"
 #include "dictionary_reader.h"
 
+// Maps the word length to the allowed number of guesses.
 const std::unordered_map<size_t, size_t> kLengthToGuesses = {
     {4, 7}, {5, 6}, {6, 5}};
+// Maps the word length to the solution dictionary's file path.
 const std::unordered_map<size_t, std::string> kLengthToDictPath = {
     {4, "final_project/four_solutions.txt"},
     {5, "final_project/five_solutions.txt"},
     {6, "final_project/six_solutions.txt"}};
+// Maps the word length to the length of the corresponding solution dictionary.
 const std::unordered_map<size_t, size_t> kLengthToDictLength = {
     {4, 2365}, {5, 3927}, {6, 5977}};
 

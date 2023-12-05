@@ -21,11 +21,16 @@ Board::Board(size_t word_length, size_t num_of_guesses, Dictionary dict) {
   }
 }
 
+// Sets the solution to a random word from the solution dictionary.
 void Board::SetRandomSolution(std::mt19937 &rng) {
   DictionaryReader reader;
   solution_ = reader.GetRandomSolution(dict_, rng);
 }
 
+// Reads in a word from the user and writes it to the guesses vector.
+// The word is guaranteed to be an uppercase alphabetical string of the correct
+// length unless the method exits the program via the escape key (in which case
+// it doesn't matter what the word is).
 void Board::ReadWord(size_t guess_index) {
   DictionaryReader reader;
   std::string *this_word = &guesses_[guess_index];
@@ -34,6 +39,8 @@ void Board::ReadWord(size_t guess_index) {
 
   while (processing) {
     char this_char = getch();
+
+    if (this_char == '\e') _exit(0);
 
     if (this_char == '\b') {
       if (chars_entered == 0) continue;
@@ -73,6 +80,9 @@ void Board::ReadWord(size_t guess_index) {
   DisplayGame();
 }
 
+// Returns a vector of colors corresponding to the correctness of each letter in
+// `word`. Green means correct letter in the correct position, yellow means
+// correct letter in the wrong position, and gray means incorrect letter.
 std::vector<Color> Board::GenerateColorMap(std::string word) {
   std::string correct = solution_;
   std::vector<Color> color_map;
@@ -103,6 +113,8 @@ std::vector<Color> Board::GenerateColorMap(std::string word) {
   return color_map;
 }
 
+// Adds ANSI color sequences to `word` to communicate correctness.
+// `word` is modified rather than returned.
 void Board::ColorizeWord(std::string *word) {
   std::vector<Color> color_map = GenerateColorMap(*word);
 
@@ -121,6 +133,8 @@ void Board::ColorizeWord(std::string *word) {
   *word = result.str();
 }
 
+// Displays both the board and the keyboard to the terminal.
+// Clears the terminal when called.
 void Board::DisplayGame() {
   const size_t kTotalLines = __max(kKeyboardHeight, num_of_guesses_ + 2);
 
@@ -140,6 +154,8 @@ void Board::DisplayGame() {
   }
 }
 
+// Displays a single line of the board, not including the keyboard.
+// Line feeds and/or carriage returns are omitted for convenience.
 void Board::Display(size_t line) {
   if (line == 0) {
     std::cout << kUpLeft << std::string(word_length_, kHori) << kUpRight;
